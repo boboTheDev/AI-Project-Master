@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import ast
 import json
 import re
 import subprocess
@@ -138,6 +139,10 @@ def validate_bootstrap() -> None:
     for key in json.loads((ROOT / "schemas/project-manifest.schema.json").read_text())["required"]:
         if not re.search(rf"^{re.escape(key)}:", manifest, re.MULTILINE):
             fail(f"manifest template missing required key: {key}")
+    helper = ROOT / "mastermind/scripts/bootstrap_project.py"
+    if not helper.is_file():
+        fail("missing Mastermind bootstrap helper")
+    ast.parse(helper.read_text(encoding="utf-8"), filename=str(helper))
 
 
 def validate_local_links() -> None:

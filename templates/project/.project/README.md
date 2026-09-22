@@ -2,13 +2,13 @@
 
 This `.project/` directory holds this project's persistent intent, decisions, and state. Project Master skills are reusable instructions at the global location below. Agents may read that library during project work and must put project-specific outputs in this project.
 
-## Configure before use
+## Bootstrap configuration
 
 - **Project Master library:** `REPLACE_WITH_ABSOLUTE_PATH_TO_PROJECT_MASTER`
 - **Project root:** the directory containing this `.project/` directory
 - **Project owner:** one person, represented in artifacts as `project_owner`
 
-Replace the library path with the actual absolute path on this device. If it is missing or inaccessible, resolve that before invoking Project Master skills. Project-root `AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md` may point here; this document is the project's canonical bootstrap.
+Mastermind fills the library path when it creates or onboards the project. If it is still a placeholder, missing, or inaccessible, complete bootstrap before planning. Project-root `AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md` may point here; this document is the project's canonical bootstrap.
 
 For cross-skill ownership and operating procedure, consult `AUTHORITY-MAP.md` and `OPERATING-GUIDE.md` under the configured Project Master library.
 

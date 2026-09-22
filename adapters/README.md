@@ -1,6 +1,6 @@
 # Agent Entry Points and Local Skill Links
 
-The managed-project template contains three thin instruction files: `AGENTS.md` for Codex and other supporting agents, `CLAUDE.md` importing it for Claude Code, and `.github/copilot-instructions.md` for GitHub Copilot in VS Code. Each points to `.project/README.md`, the canonical project bootstrap. Copy these into a managed project carefully; merge with existing agent instructions rather than replacing them.
+The managed-project template contains three thin instruction files: `AGENTS.md` for Codex and other supporting agents, `CLAUDE.md` importing it for Claude Code, and `.github/copilot-instructions.md` for GitHub Copilot in VS Code. Each points to `.project/README.md`, the canonical project bootstrap. Mastermind installs them during project onboarding and merges with existing agent instructions rather than replacing them.
 
 The skills themselves have one source in this `project-master/` directory. The optional [install-local.sh](install-local.sh) creates personal symlinks for the ten `SKILL.md` directories in `~/.agents/skills/` (Codex and GitHub Copilot) and `~/.claude/skills/` (Claude Code). It refuses to replace an existing file or foreign link. Review its dry-run output before using it on a device:
 

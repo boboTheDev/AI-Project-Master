@@ -1,4 +1,4 @@
-# Replace project_name before use. Paths are relative to this project's root.
+# Mastermind fills project_name during bootstrap. Paths are relative to this project's root.
 project_name: REPLACE_WITH_PROJECT_NAME
 artifact_root: .project
 artifact_version: 1

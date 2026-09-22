@@ -17,9 +17,10 @@ Project Master is a global library of reusable agent skills for managed projects
 - [schemas/](schemas/) documents version-one manifest and artifact metadata.
 - [examples/](examples/) illustrates Mastermind interactions, business and ADR approval boundaries, technical and data choices, an Enforcer alignment check, a UX-to-rendered-review handoff, a consequential feature change, and existing-project backfill.
 - [adapters/](adapters/) contains local skill linking and project agent entry instructions.
+- [mastermind/scripts/bootstrap_project.py](mastermind/scripts/bootstrap_project.py) lets Mastermind create or integrate a managed project without overwriting existing files.
 - [tools/validate-library.py](tools/validate-library.py) performs dependency-free static integration checks.
 
-When onboarding a project, copy the files from `templates/project/` into that project's root, replace the marked values in `.project/`, and reconcile `STATUS.md` with the real project. Merge carefully if the project already has agent instructions or a `.project/` directory. Create specialist artifacts and their subdirectories only when actual work calls for them.
+When onboarding a project, invoke Mastermind from the intended parent directory or existing repository. For a new project, Mastermind creates and verifies the folder and bootstrap before beginning business or product planning. For an existing project, it adds only missing bootstrap files and safely integrates agent instructions. Create specialist artifacts and their subdirectories only when actual work calls for them.
 
 The global library contains reusable behavior. A managed project's `.project/` contains its intent, decisions, and persistent context. Implementation belongs in that project's code directories. The sole project owner reviews consequential revisions; routine authorized work can complete automatically. Third-party material in [inspirations/](../inspirations/) is research material and does not govern Project Master.
 

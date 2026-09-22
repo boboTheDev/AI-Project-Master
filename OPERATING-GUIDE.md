@@ -2,30 +2,35 @@
 
 Use Project Master as a global read-only skill library. A managed project keeps all of its own intent, decisions, coordination records, evidence, and implementation inside that project's repository.
 
-## 1. Initialize a managed project
+## 1. Initialize a managed project through Mastermind
 
-For a new project with no conflicting instruction files, copy the project template contents into its root:
+Open the intended parent directory for a new project or the repository root for an existing project, then invoke Mastermind in natural language:
 
-```sh
-cp -R /absolute/path/to/project-master/templates/project/. /absolute/path/to/managed-project/
-```
+- “Use Mastermind. Create a new project called Acme here, then help me define its business model.”
+- “Use Mastermind. Backfill this existing project.”
 
-For an existing project, copy `.project/README.md`, `.project/project.yaml`, and `.project/STATUS.md`, then merge `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md` with existing instructions. Do not replace repository-specific rules blindly.
+For a new project, Mastermind must create and verify the project bootstrap before asking business, product, architecture, data, UX, or design questions. This gives every useful draft a project-local home from the start. If the project name or location is unclear, Mastermind asks only for the missing setup choice first.
 
-Configure:
+For an existing project, Mastermind confirms the repository root, adds only missing bootstrap files, and preserves existing instructions. It merges Project Master entry guidance into existing `AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md` where needed instead of replacing them.
 
-1. Replace `REPLACE_WITH_PROJECT_NAME` in `.project/project.yaml`.
-2. Replace `REPLACE_WITH_ABSOLUTE_PATH_TO_PROJECT_MASTER` in `.project/README.md`.
-3. Leave `tech_profile: null` unless the owner explicitly selects a defined profile.
-4. Reconcile `.project/STATUS.md` with real evidence. For an existing project, begin with domains marked `Unassessed` until backfill establishes more.
-5. Create specialist folders only when the project needs them.
+Mastermind uses [mastermind/scripts/bootstrap_project.py](mastermind/scripts/bootstrap_project.py) for deterministic setup. The helper creates a new project folder or integrates an existing repository, fills the project name and absolute library path, preserves existing files, and reports instruction files requiring an intelligent merge. Its detailed procedure is in [mastermind/references/project-bootstrap.md](mastermind/references/project-bootstrap.md).
 
-The optional personal skill links in [adapters/README.md](adapters/README.md) can make the ten skills discoverable to supported runtimes. Installation and runtime discovery are separate from project initialization.
+After initialization:
+
+1. `.project/README.md` identifies this global library and the project-local write boundary.
+2. `.project/project.yaml` contains the project name and default review policy.
+3. `.project/STATUS.md` begins `Unassessed` until evidence supports a stronger state.
+4. `tech_profile` remains `null` unless the owner selects a defined profile.
+5. Specialist folders are created only when actual work needs them.
+
+The optional personal skill links in [adapters/README.md](adapters/README.md) make the ten skills discoverable to supported runtimes. Skill installation is a one-time device action; Mastermind then performs project initialization from the conversation.
 
 ## 2. Start through Mastermind
 
 Natural requests are enough:
 
+- “Use Mastermind. Create a project called Acme here, then help me solidify the business logic.”
+- “Use Mastermind. Backfill this project.”
 - “Use Mastermind. Tell me where we are in this project.”
 - “Use Mastermind as the brainstorming lead. Help me solidify this business logic.”
 - “Use Mastermind. Plan and implement this feature.”
@@ -37,11 +42,12 @@ Mastermind identifies the requested stopping point and invokes only affected ski
 
 | Request | Default handling |
 | --- | --- |
+| New project | Create and verify the project folder and bootstrap first, then continue with the requested discovery or planning |
 | Status | Check `STATUS.md` against linked sources and report supported state; do not start an audit or change automatically |
 | Brainstorming | Use Business Architect first and add affected specialists only when needed; finish with a concrete draft or approved planning outcome |
 | Routine implementation | Read approved context, implement within scope, run targeted checks, and use Enforcer only when alignment is in question |
 | Consequential change | Create a CHG record, route affected domains, prepare concrete revisions and warranted ADRs, request owner review, then implement if requested |
-| Existing-project backfill | Inventory observed behavior, reconstruct only useful drafts, obtain owner review, then establish the approved baseline |
+| Existing-project backfill | Integrate the bootstrap first, inventory observed behavior, reconstruct only useful drafts, obtain owner review, then establish the approved baseline |
 | Conflict | Name the exact approved sources and affected work, obtain the owner's decision, and update the owning artifacts; do not pick a winner silently |
 
 ## 4. Use the authority model
@@ -117,13 +123,14 @@ Use Enforcer for a focused alignment check. It compares observed implementation 
 
 ## 8. Backfill an existing project
 
-1. Bootstrap `.project/` with `STATUS.md` marked `Unassessed`.
-2. Use Enforcer to inventory code, configuration, schema, migrations, tests, documentation, and rendered behavior.
-3. Label findings as observations because no approved baseline exists yet.
-4. Ask affected specialists to reconstruct only useful domain artifacts as `draft` or `needs-review`.
-5. Separate observed behavior, inferred intent, contradictions, and unknowns.
-6. Give the owner small, concrete review packets.
-7. After approval, promote the reviewed artifacts and update `STATUS.md`. Future Enforcer checks can use them as the baseline.
+1. Invoke Mastermind from the existing repository root.
+2. Bootstrap `.project/` with `STATUS.md` marked `Unassessed`, preserving existing files and merging agent entry guidance safely.
+3. Use Enforcer to inventory code, configuration, schema, migrations, tests, documentation, and rendered behavior.
+4. Label findings as observations because no approved baseline exists yet.
+5. Ask affected specialists to reconstruct only useful domain artifacts as `draft` or `needs-review`.
+6. Separate observed behavior, inferred intent, contradictions, and unknowns.
+7. Ask the owner only about choices evidence cannot establish, and give the owner small, concrete review packets.
+8. After approval, promote the reviewed artifacts and update `STATUS.md`. Future Enforcer checks can use them as the baseline.
 
 ## 9. Maintain `STATUS.md`
 

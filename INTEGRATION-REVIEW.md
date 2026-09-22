@@ -36,8 +36,8 @@ No full specialist pipeline is mandatory. Routine authorized work can proceed di
 
 | Scenario | Flow checked | Result |
 | --- | --- | --- |
-| New project | Bootstrap → Mastermind → relevant domain drafts → consolidated owner review → approved artifacts → implementation → Enforcer | Coherent. Empty specialist folders and unnecessary ADRs or CHGs are avoided. |
-| Existing-project backfill | Bootstrap as unassessed → Enforcer observation inventory → specialist reconstructions → owner review → approved baseline | Coherent. Code and tests remain evidence until the owner approves reconstructed intent. |
+| New project | Mastermind creates and verifies bootstrap → relevant domain drafts → consolidated owner review → approved artifacts → implementation → Enforcer | Coherent. Bootstrap precedes business discussion; empty specialist folders and unnecessary ADRs or CHGs are avoided. |
+| Existing-project backfill | Mastermind safely integrates bootstrap as unassessed → Enforcer observation inventory → specialist reconstructions → owner review → approved baseline | Coherent. Existing instructions are preserved; code and tests remain evidence until the owner approves reconstructed intent. |
 | Consequential feature | CHG → affected specialists → warranted ADR → exact review packet → canonical artifact promotion → implementation → verification | Coherent after defining separate proposed replacement files and distinct CHG implementation state. |
 | Routine implementation fix | Read approved context → implement within authorized scope → targeted check → optional Enforcer finding | Coherent. No unnecessary CHG, ADR, or owner review is required. |
 | Conflicting approved artifacts | Name both sources → pause affected work → Mastermind presents focused choice → owner decides → owning specialists revise artifacts | Coherent. Neither code, recency, status, nor ADR automatically wins. |
@@ -68,6 +68,7 @@ The following contracts align:
 - Decision and change IDs use `ADR-###` and `CHG-###`.
 - A selected technology profile fills unresolved choices but does not override approved project architecture.
 - Project entry files lead agents to the canonical `.project/README.md` bootstrap.
+- Mastermind performs new-project and existing-project bootstrap through a deterministic helper before planning or backfill analysis.
 - All ten skills use the common fourteen-section contract.
 
 The reusable validator in `tools/validate-library.py` checks the skill set and headings, frontmatter basics, JSON syntax, template metadata, required bootstrap files, local Markdown links, adapter shell syntax, and exact CHG implementation-state agreement.
@@ -77,6 +78,7 @@ Validation completed successfully on 2026-09-22:
 - `python3 project-master/tools/validate-library.py` passed every static check.
 - All skill and lifecycle-template frontmatter parsed with the available Ruby YAML parser.
 - The Python validator compiled with its cache redirected to a writable temporary path.
+- The bootstrap helper passed isolated new-project, existing-project preservation, collision, wrong-mode rejection, and side-effect-free dry-run checks.
 - `install-local.sh --dry-run` enumerated all ten skills for both configured target directories and made no writes.
 
 ## 6. Resolved findings
@@ -91,6 +93,7 @@ Validation completed successfully on 2026-09-22:
 | Review evidence could look like an authoritative artifact | Kept UI review, Enforcer review, and prototype notes as evidence-only documents without approval frontmatter |
 | Handoffs were distributed across skills but hard to inspect | Added one cross-skill handoff and authority map |
 | Initialization and common operating flows were spread across several files | Added [OPERATING-GUIDE.md](OPERATING-GUIDE.md) |
+| Project onboarding required manual copying and placeholder edits | Added Mastermind bootstrap modes and a collision-safe helper that configures new or existing projects before planning |
 
 ## Remaining validation boundary
 
