@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-master.local/schemas/artifact-metadata.schema.json",
+  "title": "Project Master artifact metadata",
+  "description": "Schema for YAML frontmatter extracted from a project artifact; additional domain fields are allowed.",
+  "type": "object",
+  "required": ["status", "owner", "revision"],
+  "properties": {
+    "status": {"enum": ["draft", "needs-review", "approved", "superseded"]},
+    "owner": {"const": "project_owner"},
+    "revision": {"type": "integer", "minimum": 1},
+    "depends_on": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "approved_by": {"const": "project_owner"},
+    "approved_on": {"type": "string", "format": "date"}
+  },
+  "if": {"properties": {"status": {"enum": ["approved", "superseded"]}}, "required": ["status"]},
+  "then": {"required": ["approved_by", "approved_on"]},
+  "additionalProperties": true
+}

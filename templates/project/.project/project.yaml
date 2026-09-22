@@ -1,0 +1,22 @@
+# Replace project_name before use. Paths are relative to this project's root.
+project_name: REPLACE_WITH_PROJECT_NAME
+artifact_root: .project
+artifact_version: 1
+
+# Set only after the project selects a defined global technology profile.
+tech_profile: null
+
+decision_directory: .project/decisions
+change_directory: .project/changes
+
+# Default categories of consequential intent needing the sole owner's review.
+approval_required_for:
+  - business_rules
+  - architecture
+  - database_changes
+  - breaking_api_changes
+  - major_ux_changes
+  - consequential_design_changes
+
+# Explicit project choices take precedence over global defaults.
+overrides: {}

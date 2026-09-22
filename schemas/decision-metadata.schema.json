@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-master.local/schemas/decision-metadata.schema.json",
+  "title": "Project Master decision metadata",
+  "allOf": [
+    {"$ref": "artifact-metadata.schema.json"},
+    {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^ADR-[0-9]{3,}$"},
+        "supersedes": {"type": "string", "pattern": "^ADR-[0-9]{3,}$"},
+        "superseded_by": {"type": "string", "pattern": "^ADR-[0-9]{3,}$"}
+      },
+      "if": {"properties": {"status": {"const": "superseded"}}, "required": ["status"]},
+      "then": {"required": ["superseded_by"]}
+    }
+  ]
+}

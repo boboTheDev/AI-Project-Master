@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-master.local/schemas/change-metadata.schema.json",
+  "title": "Project Master change metadata",
+  "allOf": [
+    {"$ref": "artifact-metadata.schema.json"},
+    {
+      "type": "object",
+      "required": ["id", "implementation_state", "affects", "decisions"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^CHG-[0-9]{3,}$"},
+        "implementation_state": {"enum": ["not-started", "in-progress", "implemented", "verified", "blocked"]},
+        "affects": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["business", "tech", "database", "ux", "design", "ui", "implementation"]}
+        },
+        "decisions": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^ADR-[0-9]{3,}$"}}
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-master.local/schemas/project-manifest.schema.json",
+  "title": "Project Master manifest",
+  "description": "Schema for a managed project's .project/project.yaml. Paths are relative to the project root.",
+  "type": "object",
+  "required": ["project_name", "artifact_root", "artifact_version", "tech_profile", "decision_directory", "change_directory", "approval_required_for", "overrides"],
+  "properties": {
+    "project_name": {"type": "string", "minLength": 1},
+    "artifact_root": {"const": ".project"},
+    "artifact_version": {"const": 1},
+    "tech_profile": {"type": ["string", "null"], "minLength": 1},
+    "decision_directory": {"type": "string", "pattern": "^\\.project/[A-Za-z0-9/_-]+$"},
+    "change_directory": {"type": "string", "pattern": "^\\.project/[A-Za-z0-9/_-]+$"},
+    "approval_required_for": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "overrides": {"type": "object"}
+  },
+  "additionalProperties": false
+}
