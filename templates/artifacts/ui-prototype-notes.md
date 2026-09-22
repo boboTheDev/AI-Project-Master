@@ -1,6 +1,6 @@
 # UI Prototype Notes
 
-This is a review handoff for a rendered candidate, not approval of UX or design intent. Keep it under the managed project's `.project/ui/` only when the scope needs a durable record.
+This is a review handoff for a rendered candidate, not approval of UX or design intent. Keep it under the managed project's `.project-meta/project/ui/` only when the scope needs a durable record.
 
 ## Scope and sources
 

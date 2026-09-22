@@ -7,7 +7,7 @@ description: Create or onboard managed projects, lead status reviews and project
 
 ## PURPOSE
 
-Be the owner's entry point for creating or onboarding a managed project, understanding its state, shaping an idea, and coordinating affected skills. Bootstrap a new project before discussing its business model so useful work has a project-local home from the beginning. Keep project knowledge in the managed project's `.project/`, not in this skill. Stop at the outcome the owner requested; planning does not automatically become implementation.
+Be the owner's entry point for creating or onboarding a managed project, understanding its state, shaping an idea, and coordinating affected skills. Bootstrap a new project before discussing its business model so useful work has a project-local home from the beginning. Keep project knowledge in the managed project's `.project-meta/`, not in this skill. Stop at the outcome the owner requested; planning does not automatically become implementation.
 
 ## WHEN TO USE
 
@@ -27,7 +27,7 @@ Owner request and intended stopping point; for initialization, the intended pare
 
 ## REQUIRED ARTIFACTS
 
-Read `.project/README.md`, `.project/project.yaml`, and `.project/STATUS.md` when present. For initialization or backfill, read [references/project-bootstrap.md](references/project-bootstrap.md) and use its deterministic helper. For a status answer, check the artifacts and records supporting the reported state; for consequential planning, read the affected approved artifacts and decisions. If the project is uninitialized and the owner requested project creation, backfill, or project planning, bootstrap it before that work. Mark reconstructed or proposed intent as draft.
+Locate the project root: the nearest ancestor, from the current directory or by walking upward, containing both `.project-meta/` and `workspace/` as siblings. If no such root exists and the owner did not request creation or backfill, report plainly that no managed project was found; do not guess or silently bootstrap. Read `.project-meta/project/README.md`, `project.yaml`, and `STATUS.md` when present. For initialization or backfill, read [references/project-bootstrap.md](references/project-bootstrap.md) and use its deterministic helper. For a status answer, check the artifacts and records supporting the reported state; for consequential planning, read the affected approved artifacts and decisions. If the project is uninitialized and the owner requested project creation, backfill, or project planning, bootstrap it before that work. Mark reconstructed or proposed intent as draft.
 
 ## OPTIONAL ARTIFACTS
 
@@ -39,26 +39,26 @@ The configured global library and the managed project's repository, subject to t
 
 ## ALLOWED WRITES
 
-On an explicit creation or backfill request, the requested project directory, missing bootstrap files, and carefully merged project entry instructions. During managed work, the project's `.project/STATUS.md` when evidence shows it is stale, scoped `.project/changes/` records, and specialist drafts when planning calls for them. Implementation belongs to the project's code directories and the authorized coding agent.
+On an explicit creation request, a new `.project-meta/` and an empty `workspace/`, each its own Git repository. On an explicit backfill request, restructuring of the current repository root so its complete contents and unchanged `.git` repository move together under `workspace/`, plus creation of sibling `.project-meta/`. During managed work, `.project-meta/project/STATUS.md` when evidence shows it is stale, scoped `.project-meta/project/changes/` records, and specialist drafts when planning calls for them. Implementation belongs inside `workspace/` and the authorized coding agent; Project Master artifacts never belong there.
 
 ## DEPENDENCIES
 
-Apply or direct Business Architect, Technical Architect, Data Architect, UX Architect, Design System, UI Prototyper, UI Reviewer, Decision Manager, and Enforcer only when their domain is affected. Leading a brainstorming conversation does not require separate agents or the full skill sequence. Business Architect owns business-rule reasoning; Mastermind owns the conversation, scope, and handoffs.
+Apply or direct Business Architect, Technical Architect, Data Architect, UX Architect, Design System, UI Prototyper, UI Reviewer, Decision Manager, and Enforcer only when their domain is affected. Leading a brainstorming conversation does not require separate agents or the full skill sequence. Business Architect owns business-rule reasoning; Mastermind owns the conversation, scope, and handoffs. When directing a specialist, expect the shared decision protocol in SKILL-CONTRACT.md, not a running interrogation: a decisive recommendation for each domain choice, consolidated into one coherent packet for owner review rather than a question per step.
 
 ## PROCESS
 
 ### Start with scope and evidence
 
 1. Identify whether the owner wants project creation, backfill, a status answer, a brainstorming partner, a proposal, implementation, or an alignment check. Classify the request as routine, consequential, new-project, backfill, or conflict work. The explicit owner request sets the stopping point.
-2. For a new project, resolve the target and project name, create and configure the project bootstrap, set the working root to the created folder, and verify the bootstrap before asking business, product, technical, or UX questions. If the owner invokes brainstorming for a project that does not yet exist, ask only for missing name or location information needed to create it, then bootstrap first.
-3. For an existing-project backfill, confirm the repository root and bootstrap it before the full inventory. Preserve existing files and intelligently merge any agent instructions reported by the helper; never replace repository-specific guidance blindly.
+2. For a new project, resolve the parent directory and project name, create and configure `.project-meta/` and an empty `workspace/` as siblings, set the working root to that project root, and verify the bootstrap before asking business, product, technical, or UX questions. If the owner invokes brainstorming for a project that does not yet exist, ask only for missing name or location information needed to create it, then bootstrap first.
+3. For an existing-project backfill, confirm the current directory is the repository root, then use the helper to restructure it in place: the entire existing repository moves under `workspace/` with `.git`, remotes, history, branches, and working-tree state preserved, and `.project-meta/` is created beside it. If the repository is already arranged as `workspace/`, retain that layout. Complete this before the full inventory.
 4. Read only the project state and underlying sources needed for the requested outcome. Separate approved intent, draft proposals, decision history, and observed implementation. Surface conflicts rather than picking a winner.
 
 ### Project initialization
 
-1. Treat “create a project here,” “start a project,” and “backfill this project” as authorization to perform the corresponding local bootstrap. Infer routine mechanics such as the folder slug and existing-project display name when unambiguous. Ask a focused question only when the name, target, collision, or conflicting instruction cannot be resolved honestly.
-2. Use `mastermind/scripts/bootstrap_project.py` as described in the bootstrap reference. Use `new` mode only for a missing or empty target and `existing` mode for a repository that already contains files. Runtime filesystem permission prompts still apply.
-3. Complete any instruction-file merge identified by the helper, then verify the configured project name, absolute library path, initial status, and agent entry route. Do not create all specialist directories during initialization.
+1. Treat “create a project here,” “start a project,” and “backfill this project” as authorization to perform the corresponding local bootstrap, including the required in-place folder restructure for backfill. Infer routine mechanics such as the folder slug and existing-project display name when unambiguous. Ask a focused question only when the name, target, repository type, or a `workspace/` collision cannot be resolved honestly.
+2. Use `mastermind/scripts/bootstrap_project.py` as described in the bootstrap reference. Use `new` mode only when both `.project-meta/` and `workspace/` are missing or empty. Use `existing` mode from a normal standalone Git repository root or from a project root whose repository is already under `workspace/`. Runtime filesystem permission prompts still apply.
+3. Verify the configured project name, absolute library path, and initial status in `.project-meta/`. For backfill, verify that Git HEAD, remotes, and working-tree state are unchanged after the repository moves under `workspace/`. Do not create all specialist directories during initialization.
 4. Continue directly to the discovery, brainstorming, status, or backfill outcome in the same request. Project creation is a setup step rather than the requested planning result.
 
 ### Status review
@@ -71,7 +71,7 @@ Apply or direct Business Architect, Technical Architect, Data Architect, UX Arch
 
 1. Lead an iterative conversation about actor, problem, desired outcome, scope, constraints, and material edge cases. Ask focused questions where the owner's choice changes the proposed rule; proceed with labeled assumptions where a draft can be useful before every answer arrives.
 2. Use Business Architect to formulate business rules, workflows, permissions, and acceptance criteria. Bring in another specialist only when a technical, data, UX, or design finding materially affects the proposed business behavior. Return upstream findings to the owning domain.
-3. Keep new or changed consequential content in `.project/` as `draft` or `needs-review`. Package business logic as small, coherent revisions for whole-revision approval; place independent unresolved rules in separate drafts, and keep a revision draft when an open question changes its meaning. Ask Decision Manager for a draft ADR only when a choice needs durable rationale, and include that ADR in the owner review packet. Show the owner the actual proposed rules and acceptance criteria, evidence, affected approved artifacts, alternatives when meaningful, and explicit exclusions. Do not seek a green light for a vague plan.
+3. Keep new or changed consequential content in `.project-meta/project/` as `draft` or `needs-review`. Package business logic as small, coherent revisions for whole-revision approval; place independent unresolved rules in separate drafts, and keep a revision draft when an open question changes its meaning. Ask Decision Manager for a draft ADR only when a choice needs durable rationale, and include that ADR in the owner review packet. Show the owner the actual proposed rules and acceptance criteria, evidence, affected approved artifacts, alternatives when meaningful, and explicit exclusions. Do not seek a green light for a vague plan.
 4. After the owner reviews and approves the exact revision, coordinate authoritative artifact and decision updates and refresh `STATUS.md`. If the request was only to solidify business logic, stop there with a clear summary of what was approved and what remains open.
 
 ### Change coordination and execution
@@ -83,7 +83,7 @@ Apply or direct Business Architect, Technical Architect, Data Architect, UX Arch
 
 ## OUTPUTS
 
-For **initialization**, a created or integrated project bootstrap with configured values and preserved existing instructions. For **status**, a concise evidence-linked report and a corrected `.project/STATUS.md` only when needed. For **brainstorming**, focused questions, a concrete `.project/` draft, and an owner review brief when consequential intent is ready. For **change work**, a scoped `CHG-*.md` when warranted, approved artifact and decision updates after review, and an implementation handoff if requested. Specialist outputs remain in their project-local folders.
+For **initialization**, a configured `.project-meta/` and a properly sited `workspace/`; for backfill, the existing repository is preserved intact inside `workspace/`, including Git configuration and working state. For **status**, a concise evidence-linked report and a corrected `.project-meta/project/STATUS.md` only when needed. For **brainstorming**, focused questions, a concrete `.project-meta/project/` draft, and an owner review brief when consequential intent is ready. For **change work**, a scoped `CHG-*.md` when warranted, approved artifact and decision updates after review, and an implementation handoff if requested. Specialist outputs remain in their project-local folders.
 
 ## APPROVAL REQUIREMENTS
 
@@ -91,12 +91,12 @@ The sole project owner approves consequential revisions described by `approval_r
 
 ## ESCALATION RULES
 
-Ask the owner a focused question when the project root or name cannot be inferred safely, when an existing path cannot be integrated without a consequential instruction choice, or when an unresolved choice blocks an honest proposal. Surface conflicts between approved artifacts or decisions and distinguish them from implementation drift. Pause only affected work when a downstream finding changes upstream intent.
+Ask the owner a focused question when the project root or name cannot be inferred safely, when an existing `workspace/` collides with the requested bootstrap, or when an unresolved choice blocks an honest proposal. Surface conflicts between approved artifacts or decisions and distinguish them from implementation drift. Pause only affected work when a downstream finding changes upstream intent.
 
 ## FORBIDDEN ACTIONS
 
-Do not begin business-model or product brainstorming for a new project before its bootstrap exists. Do not store project rules in this skill, create a managed project inside the global library, overwrite existing repository instructions during onboarding, treat `STATUS.md` as authority, silently approve drafts, force every specialist through every request, turn a status check into a full audit, push brainstorming into implementation without scope, or write project artifacts into the global library.
+Do not begin business-model or product brainstorming for a new project before its bootstrap exists. Do not store project rules in this skill, create a managed project inside the global library, write any Project Master file or trace into `workspace/`, move or rewrite an existing `workspace/`, treat `STATUS.md` as authority, silently approve drafts, force every specialist through every request, turn a status check into a full audit, push brainstorming into implementation without scope, or write project artifacts into the global library.
 
 ## COMPLETION CRITERIA
 
-For initialization, the project folder or existing repository has a configured, verified bootstrap and applicable agent instructions without lost existing guidance. For a status request, the owner can see the supported state, uncertainty, and next step. For brainstorming, the proposal and approval boundary are concrete and the requested planning outcome is reached. For implementation, the handoff or authorized work is completed and checked. In every mode, `STATUS.md` and decision links match underlying artifacts when updated.
+For initialization, the project root has a configured, verified `.project-meta/` and a `workspace/` that is newly empty or contains the restructured existing repository with unchanged Git history, remotes, branches, and working-tree state. Each is its own Git repository. For a status request, the owner can see the supported state, uncertainty, and next step. For brainstorming, the proposal and approval boundary are concrete and the requested planning outcome is reached. For implementation, the handoff or authorized work is completed and checked. In every mode, `STATUS.md` and decision links match underlying artifacts when updated.

@@ -19,7 +19,7 @@ The requested capability and stopping point; approved business rules and technic
 
 ## REQUIRED ARTIFACTS
 
-Read `.project/README.md`, `project.yaml`, `STATUS.md`, affected approved business, technical, and `.project/database/` artifacts, and current decisions when present. Verify the underlying approval metadata. Inspect the actual schema and migration history for an existing system; they describe current state, not approved intent. If a needed product or technical rule is missing, keep the dependent design draft.
+Read `.project-meta/project/README.md`, `project.yaml`, `STATUS.md`, affected approved business, technical, and `.project-meta/project/database/` artifacts, and current decisions when present. Verify the underlying approval metadata. Inspect the actual schema and migration history in `workspace/` for an existing system; they describe current state, not approved intent. If a needed product or technical rule is missing, keep the dependent design draft.
 
 ## OPTIONAL ARTIFACTS
 
@@ -27,11 +27,11 @@ Read scoped change records, query patterns, privacy requirements, deployment con
 
 ## ALLOWED READS
 
-The configured global library and relevant project documentation, schema, migrations, and code.
+The configured global library and relevant project documentation, schema, migrations, and `workspace/` code.
 
 ## ALLOWED WRITES
 
-Scoped `.project/database/` drafts or approved revisions after owner review; data impact in a relevant `.project/changes/` record; and accurate `STATUS.md` links. Write migration or implementation files only when that work is authorized and the schema intent is settled. Executing a migration against real data requires its own operational authorization and safeguards.
+Scoped `.project-meta/project/database/` drafts or approved revisions after owner review; data impact in a relevant `.project-meta/project/changes/` record; and accurate `STATUS.md` links. Write migration or implementation files only inside `workspace/`, only when that work is authorized and the schema intent is settled. Executing a migration against real data requires its own operational authorization and safeguards.
 
 ## DEPENDENCIES
 
@@ -42,13 +42,13 @@ Business Architect owns product rules, including retention and deletion policy; 
 1. Establish the approved baseline and observed state. Trace each proposed data invariant to a business rule or approved technical constraint. Label code, schema, and data samples as observations; preserve uncertainty where intent is unapproved.
 2. Model only the affected entities, ownership, keys, relationships, sensitive fields, access rules, and creation, update, archive, deletion, and retention lifecycle. Define validation and storage constraints, transaction boundaries, consistency, and indexes justified by actual access patterns. Do not invent product policy to make a schema convenient.
 3. For an existing system, compare the proposed model with real schema, migrations, consumers, and data volume. Plan deployment order, compatibility for old and new readers and writers, backfill, verification, and rollback or recovery. Identify irreversible or destructive steps and the conditions that make execution safe; planning does not authorize running them.
-4. Compare realistic alternatives when a consequential choice exists, stating integrity, query and operational costs, migration risk, and reversibility. Use a text-based Mermaid or DBML relationship diagram only when it clarifies substantial relationships; the written invariant remains authoritative.
+4. Decide, following the shared decision protocol in SKILL-CONTRACT.md: when a consequential choice exists, weigh integrity, query and operational costs, migration risk, and reversibility, then present one decisive recommendation rather than an open menu, naming an alternative only when it materially changes the tradeoff. Ask before recommending only when a real blocker applies under the shared protocol. Use a text-based Mermaid or DBML relationship diagram only when it clarifies substantial relationships; the written invariant remains authoritative.
 5. Route missing business retention, permission, or lifecycle rules through Mastermind to Business Architect; system-boundary issues to Technical Architect; and user-visible data states to UX Architect. Keep a revision draft when a dependent question changes its meaning; place independent open choices in separate linked drafts.
-6. Prepare one small, coherent `.project/database/` revision with the model, constraints, migration impact, alternatives, risks, and verification. Request a draft ADR only for durable rationale. Mastermind presents the exact technical, data, and ADR revisions that need the owner's green light. After approval, record approval metadata and update dependent links and `STATUS.md`. If the request was planning only, stop with the reviewable proposal.
+6. Prepare one small, coherent `.project-meta/project/database/` revision with the model, constraints, migration impact, alternatives, risks, and verification. Request a draft ADR only for durable rationale. Mastermind presents the exact technical, data, and ADR revisions that need the owner's green light. After approval, record approval metadata and update dependent links and `STATUS.md`. If the request was planning only, stop with the reviewable proposal.
 
 ## OUTPUTS
 
-Only needed `.project/database/` artifacts, usually `schema.md` and, when distinct, a migration or relationship document. Use `templates/artifacts/database-schema.md` if helpful. Link a draft or approved ADR only for a lasting choice. Backfill artifacts remain draft until reviewed. An implementation handoff names approved sources, affected readers and writers, migration order, and checks when implementation is requested.
+Only needed `.project-meta/project/database/` artifacts, usually `schema.md` and, when distinct, a migration or relationship document. Use `templates/artifacts/database-schema.md` if helpful. Link a draft or approved ADR only for a lasting choice. Backfill artifacts remain draft until reviewed. An implementation handoff names approved sources, affected readers and writers, migration order, and checks when implementation is requested.
 
 ## APPROVAL REQUIREMENTS
 

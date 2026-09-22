@@ -19,19 +19,19 @@ The requested user goal and stopping point; approved business behavior, roles an
 
 ## REQUIRED ARTIFACTS
 
-Read `.project/README.md`, `project.yaml`, `STATUS.md`, affected approved business and `.project/ux/` artifacts, and relevant decisions when present. Check the underlying revision and approval metadata. Read approved technical and database constraints where they affect the journey. If a needed product rule is missing or draft, keep the dependent UX proposal provisional; observed UI alone does not approve a journey.
+Read `.project-meta/project/README.md`, `project.yaml`, `STATUS.md`, affected approved business and `.project-meta/project/ux/` artifacts, and relevant decisions when present. Check the underlying revision and approval metadata. Read approved technical and database constraints where they affect the journey. If a needed product rule is missing or draft, keep the dependent UX proposal provisional; observed UI alone does not approve a journey.
 
 ## OPTIONAL ARTIFACTS
 
-Research, analytics, support evidence, screen captures, current implementation, and scoped change records when they help distinguish real behavior from intended flow. Use the library's UX template when helpful.
+Research, analytics, support evidence, screen captures, current `workspace/` implementation, and scoped change records when they help distinguish real behavior from intended flow. Use the library's UX template when helpful.
 
 ## ALLOWED READS
 
-The configured global library and relevant project artifacts, code, and interface evidence within available permissions.
+The configured global library and relevant project artifacts, `workspace/` code, and interface evidence within available permissions.
 
 ## ALLOWED WRITES
 
-Scoped `.project/ux/` drafts or approved revisions after owner review; UX impact in a relevant `.project/changes/` record; accurate `STATUS.md` links. Write no production UI code or global design defaults under this skill.
+Scoped `.project-meta/project/ux/` drafts or approved revisions after owner review; UX impact in a relevant `.project-meta/project/changes/` record; accurate `STATUS.md` links. Write no production UI code or global design defaults under this skill.
 
 ## DEPENDENCIES
 
@@ -42,13 +42,13 @@ Business Architect owns outcomes, permissions, and product rules. Technical and 
 1. Establish the affected actors, goals, approved outcomes, current journey, and scope. Separate observed UI from approved intent. Use actual research or support evidence when available; do not invent users, findings, or metrics.
 2. Map each relevant entry point, action, decision, system response, recovery, and exit. Define navigation and page responsibilities, including what information and controls must be present. Remove needless steps and explain any consequential change to the journey.
 3. Specify the material populated, empty, loading, success, validation, permission, error, and interruption states that this scope can reach. For each, state the trigger, user-visible feedback, available action, and recovery or next step. Include keyboard, focus, and responsive structure where they affect the flow; leave visual styling to Design System.
-4. Trace behavior and wording with product meaning to approved business rules. Compare meaningful UX alternatives by task completion, clarity, effort, and failure recovery. Return missing permission, eligibility, or outcome rules through Mastermind to Business Architect; route technical and data limits to their owners. Keep dependent UX drafts unapproved until those questions are settled.
-5. Prepare a small, coherent `.project/ux/` revision and owner brief for a consequential journey change. Link the exact proposed flow, page/state inventory, alternatives, affected artifacts, and any warranted draft ADR. After the owner reviews and approves those exact revisions, record approval metadata and update `STATUS.md`. During planning, use feedback to refine the draft before handoff; if planning was the requested outcome, stop there.
+4. Trace behavior and wording with product meaning to approved business rules. Decide, following the shared decision protocol in SKILL-CONTRACT.md: weigh meaningful UX alternatives by task completion, clarity, effort, and failure recovery, then present one decisive recommendation rather than an open menu. Return missing permission, eligibility, or outcome rules through Mastermind to Business Architect; route technical and data limits to their owners. Keep dependent UX drafts unapproved until those questions are settled.
+5. Prepare a small, coherent `.project-meta/project/ux/` revision and owner brief for a consequential journey change. Link the exact proposed flow, page/state inventory, alternatives, affected artifacts, and any warranted draft ADR. After the owner reviews and approves those exact revisions, record approval metadata and update `STATUS.md`. During planning, use feedback to refine the draft before handoff; if planning was the requested outcome, stop there.
 6. Hand Design System and UI Prototyper the approved flow, page responsibilities, content hierarchy, interactions, and state coverage. Label exploratory handoffs as draft and state what they may assume; do not ask downstream work to invent unsettled product behavior.
 
 ## OUTPUTS
 
-Only needed `.project/ux/` artifacts, usually `user-journeys.md` and, when distinct, page or state specifications. Use `templates/artifacts/ux-user-journeys.md` if helpful. Link a draft or approved ADR only for a lasting UX choice. Backfill remains draft until reviewed. The handoff identifies approved sources, routes/pages, transitions, content hierarchy, and material states.
+Only needed `.project-meta/project/ux/` artifacts, usually `user-journeys.md` and, when distinct, page or state specifications. Use `templates/artifacts/ux-user-journeys.md` if helpful. Link a draft or approved ADR only for a lasting UX choice. Backfill remains draft until reviewed. The handoff identifies approved sources, routes/pages, transitions, content hierarchy, and material states.
 
 ## APPROVAL REQUIREMENTS
 

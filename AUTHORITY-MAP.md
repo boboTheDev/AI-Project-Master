@@ -6,17 +6,17 @@ This map defines who owns each kind of project decision and what each project-lo
 
 | Area | Owning skill | Consulted skills | Authoritative result after owner approval |
 | --- | --- | --- | --- |
-| Product vision, actors, outcomes, scope, terminology, business rules, permissions, retention and deletion policy, acceptance semantics | Business Architect | Mastermind, then affected specialists | `.project/context/` and `.project/business/` |
-| System boundaries, component responsibilities, interfaces, integrations, deployment direction, selected technology profile | Technical Architect | Business, Data, UX | `.project/tech/` and approved `project.yaml` profile or overrides |
-| Persistent model, storage constraints, consistency, indexes, data migration design | Data Architect | Business for policy, Technical for boundaries, UX for visible states | `.project/database/` |
-| Journeys, navigation, information hierarchy, page responsibilities, interaction outcomes and material states | UX Architect | Business, Technical, Data | `.project/ux/` |
-| Visual direction, semantic tokens, reusable component rules, responsive and interaction styling | Design System | UX, Business for claims | `.project/design/` |
-| Lasting rationale for a meaningful choice | Decision Manager, using content from the owning specialist | Mastermind and affected specialists | `.project/decisions/ADR-*.md` |
-| Cross-domain scope, review packet, implementation coordination and status | Mastermind | All affected skills | `.project/changes/CHG-*.md` and `.project/STATUS.md`; these coordinate and index rather than define behavior |
-| Frontend candidate and simulated states | UI Prototyper | UX and Design System | Prototype code and optional `.project/ui/` notes; these demonstrate behavior but do not approve intent |
-| Rendered UI findings | UI Reviewer | UX, Design System, implementer | `.project/ui/` evidence; findings do not define intent |
-| Alignment findings and safe authorized corrections | Enforcer | Owning specialist and Mastermind | Evidence under `.project/changes/` or affected review area; findings do not define intent |
-| Implementation | Authorized coding agent | Relevant owning specialists and Enforcer | Project code, tests, migrations, and configuration; these show current behavior but do not approve intent |
+| Product vision, actors, outcomes, scope, terminology, business rules, permissions, retention and deletion policy, acceptance semantics | Business Architect | Mastermind, then affected specialists | `.project-meta/project/context/` and `.project-meta/project/business/` |
+| System boundaries, component responsibilities, interfaces, integrations, deployment direction, selected technology profile | Technical Architect | Business, Data, UX | `.project-meta/project/tech/` and approved `project.yaml` profile or overrides |
+| Persistent model, storage constraints, consistency, indexes, data migration design | Data Architect | Business for policy, Technical for boundaries, UX for visible states | `.project-meta/project/database/` |
+| Journeys, navigation, information hierarchy, page responsibilities, interaction outcomes and material states | UX Architect | Business, Technical, Data | `.project-meta/project/ux/` |
+| Visual direction, semantic tokens, reusable component rules, responsive and interaction styling | Design System | UX, Business for claims | `.project-meta/project/design/` |
+| Lasting rationale for a meaningful choice | Decision Manager, using content from the owning specialist | Mastermind and affected specialists | `.project-meta/project/decisions/ADR-*.md` |
+| Cross-domain scope, review packet, implementation coordination and status | Mastermind | All affected skills | `.project-meta/project/changes/CHG-*.md` and `.project-meta/project/STATUS.md`; these coordinate and index rather than define behavior |
+| Disposable frontend candidate and simulated states | UI Prototyper | UX and Design System | `.project-meta/prototype/` and optional `.project-meta/project/ui/` notes; these demonstrate flow but do not approve intent and never reach `workspace/` |
+| Rendered UI findings | UI Reviewer | UX, Design System, implementer | `.project-meta/project/ui/` evidence; findings do not define intent |
+| Alignment findings and safe authorized corrections | Enforcer | Owning specialist and Mastermind | Evidence under `.project-meta/project/changes/` or affected review area; findings do not define intent |
+| Implementation | Authorized coding agent | Relevant owning specialists and Enforcer | `workspace/` code, tests, migrations, and configuration; these show current behavior but do not approve intent |
 
 ## Information authority
 
@@ -29,7 +29,7 @@ This map defines who owns each kind of project decision and what each project-lo
 | Draft or `needs-review` artifact | Proposal or review candidate | No |
 | CHG record | Scope, review packet, links, and implementation progress | No; linked revisions keep their own approval state |
 | `STATUS.md` | Derived index of approved, draft, active, blocked, and unverified state | No |
-| Code, tests, schema, migrations, logs, and rendered UI | Evidence of current implementation | No |
+| `workspace/` code, tests, schema, migrations, logs, and rendered UI | Evidence of current implementation | No |
 | UI review, Enforcer report, prototype notes, screenshots | Evidence, findings, or simulation boundaries | No |
 | Global defaults and templates | Reusable starting points | No; approved project choices and explicit owner instructions govern |
 | Conversation history | Temporary context | No; persist consequential decisions in project artifacts |

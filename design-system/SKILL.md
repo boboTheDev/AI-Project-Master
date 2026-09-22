@@ -19,7 +19,7 @@ The requested design scope and stopping point; approved UX, product context, aud
 
 ## REQUIRED ARTIFACTS
 
-Read `.project/README.md`, `project.yaml`, `STATUS.md`, affected approved `.project/ux/` and `.project/design/` artifacts, and related decisions when present. Check approval metadata. Inspect current tokens, components, and rendered UI when extending a project; they are evidence of implementation, not automatic approval of visual intent. Keep design that depends on draft UX provisional.
+Read `.project-meta/project/README.md`, `project.yaml`, `STATUS.md`, affected approved `.project-meta/project/ux/` and `.project-meta/project/design/` artifacts, and related decisions when present. Check approval metadata. Inspect current tokens, components, and rendered UI when extending a project; they are evidence of implementation, not automatic approval of visual intent. Keep design that depends on draft UX provisional.
 
 ## OPTIONAL ARTIFACTS
 
@@ -27,11 +27,11 @@ Read `defaults/ui-conventions.md`, brand references, relevant content and assets
 
 ## ALLOWED READS
 
-The configured global library and relevant project artifacts, code, assets, and rendered interface evidence within available permissions.
+The configured global library and relevant project artifacts, `workspace/` code, assets, and rendered interface evidence within available permissions.
 
 ## ALLOWED WRITES
 
-Scoped `.project/design/` drafts, previews and approval evidence, or approved revisions after owner review; design impact in a relevant `.project/changes/` record; accurate `STATUS.md` links. Write implementation tokens or components only when separately authorized. Keep project design out of the global library.
+Scoped `.project-meta/project/design/` drafts, previews and approval evidence, or approved revisions after owner review; design impact in a relevant `.project-meta/project/changes/` record; accurate `STATUS.md` links. Write implementation tokens or components only when separately authorized, and only inside `workspace/`. Keep project design out of the global library.
 
 ## DEPENDENCIES
 
@@ -42,13 +42,13 @@ UX Architect owns workflow, content hierarchy, and interaction outcomes. Busines
 1. Establish the approved UX and design baseline, audience, content shape, existing system, and scope. Distinguish approved rules from observed UI and optional references. State a compact visual direction tied to the product's tasks and brand, with a reason for any departure.
 2. Define only needed semantic color roles, typography hierarchy, spacing, sizing, surfaces, density, layout, responsive rules, motion, and imagery or icon treatment. Specify focus, hover, disabled, loading, error, and selected appearance where relevant. Prefer tokens and reusable rules over per-page exceptions; do not impose a universal aesthetic.
 3. Define component roles and meaningful variants against approved UX states. Check contrast, legibility, visible focus, non-color cues, reduced motion, and the input modes that matter. Record how these will be verified in a render rather than claiming accessibility from a token list alone.
-4. For a consequential direction, compare a small number of realistic visual approaches against task clarity, audience fit, brand constraints, reuse, accessibility, and implementation cost. Provide representative examples or a rendered preview for the screens and states the owner must judge. Use UI Prototyper for a provisional render when needed; label it draft.
+4. Decide, following the shared decision protocol in SKILL-CONTRACT.md: for a consequential direction, weigh a small number of realistic visual approaches against task clarity, audience fit, brand constraints, reuse, accessibility, and implementation cost, then present one decisive recommendation rather than an open menu. Provide representative examples or a rendered preview for the screens and states the owner must judge. Use UI Prototyper for a quick, disposable render when a rendered candidate helps judgment; it needs to convey the direction and flow, not match it exactly.
 5. Route a changed flow or content hierarchy to UX Architect and a new product claim to Business Architect through Mastermind. Keep dependent design draft until upstream meaning is settled. Independent token work may continue with labeled assumptions.
-6. Present a small, coherent `.project/design/` revision and linked preview for owner review. Include the exact direction, token/component changes, affected screens, alternatives, and any warranted draft ADR. After approval of the exact revisions shown, record metadata, update links and `STATUS.md`, and hand the approved rules and state examples to UI Prototyper. If the request was only planning or critique, stop at that outcome.
+6. Present a small, coherent `.project-meta/project/design/` revision and linked preview for owner review. Include the exact direction, token/component changes, affected screens, alternatives, and any warranted draft ADR. After approval of the exact revisions shown, record metadata, update links and `STATUS.md`, and hand the approved rules and state examples to UI Prototyper. If the request was only planning or critique, stop at that outcome.
 
 ## OUTPUTS
 
-Only needed `.project/design/` artifacts, usually `design-system.md` and, when distinct, token or component specifications. Use `templates/artifacts/design-system.md` if helpful. Link representative previews when visual judgment requires them; retain meaningful owner-review evidence. A draft backfill records observed conventions without approving them.
+Only needed `.project-meta/project/design/` artifacts, usually `design-system.md` and, when distinct, token or component specifications. Use `templates/artifacts/design-system.md` if helpful. Link representative previews when visual judgment requires them; retain meaningful owner-review evidence. A draft backfill records observed conventions without approving them.
 
 ## APPROVAL REQUIREMENTS
 

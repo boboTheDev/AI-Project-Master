@@ -1,6 +1,6 @@
 # Metadata Schemas
 
-These JSON Schemas describe the YAML data in `.project/project.yaml` and the extracted YAML frontmatter of project artifacts. They do not validate the prose of Markdown documents or grant approval. The `$id` values are identifiers for local schema resolution, not network services.
+These JSON Schemas describe the YAML data in `.project-meta/project/project.yaml` and the extracted YAML frontmatter of project artifacts. They do not validate the prose of Markdown documents or grant approval. The `$id` values are identifiers for local schema resolution, not network services.
 
 Evidence and handoff reports such as an Enforcer review, UI review, or prototype notes may be plain Markdown without approval-lifecycle frontmatter. They record what was checked or demonstrated; they do not become approved intent.
 

@@ -125,17 +125,23 @@ def validate_schemas() -> None:
 
 def validate_bootstrap() -> None:
     required = [
-        ROOT / "templates/project/.project/README.md",
-        ROOT / "templates/project/.project/project.yaml",
-        ROOT / "templates/project/.project/STATUS.md",
-        ROOT / "templates/project/AGENTS.md",
-        ROOT / "templates/project/CLAUDE.md",
-        ROOT / "templates/project/.github/copilot-instructions.md",
+        ROOT / "templates/project-meta/project/README.md",
+        ROOT / "templates/project-meta/project/project.yaml",
+        ROOT / "templates/project-meta/project/STATUS.md",
+        ROOT / "templates/project-meta/prototype/README.md",
     ]
     for path in required:
         if not path.is_file():
             fail(f"missing bootstrap file: {path.relative_to(ROOT)}")
-    manifest = (ROOT / "templates/project/.project/project.yaml").read_text(encoding="utf-8")
+    forbidden_entry_files = [
+        ROOT / "templates/project/AGENTS.md",
+        ROOT / "templates/project/CLAUDE.md",
+        ROOT / "templates/project/.github/copilot-instructions.md",
+    ]
+    for path in forbidden_entry_files:
+        if path.exists():
+            fail(f"obsolete workspace entry file should not exist: {path.relative_to(ROOT)}")
+    manifest = (ROOT / "templates/project-meta/project/project.yaml").read_text(encoding="utf-8")
     for key in json.loads((ROOT / "schemas/project-manifest.schema.json").read_text())["required"]:
         if not re.search(rf"^{re.escape(key)}:", manifest, re.MULTILINE):
             fail(f"manifest template missing required key: {key}")
@@ -143,6 +149,22 @@ def validate_bootstrap() -> None:
     if not helper.is_file():
         fail("missing Mastermind bootstrap helper")
     ast.parse(helper.read_text(encoding="utf-8"), filename=str(helper))
+
+
+def validate_no_legacy_project_path() -> None:
+    pattern = re.compile(r"\.project/")
+    skip_files = {
+        ROOT / "INTEGRATION-REVIEW.md",
+        ROOT / "defaults/folder-structure.md",
+        ROOT / "tools/validate-library.py",
+    }
+    for path in sorted(ROOT.rglob("*")):
+        if path in skip_files or not path.is_file():
+            continue
+        if path.suffix not in {".md", ".py", ".json", ".sh", ".yaml", ".yml"}:
+            continue
+        if pattern.search(path.read_text(encoding="utf-8")):
+            fail(f"legacy .project/ path reference found: {path.relative_to(ROOT)}")
 
 
 def validate_local_links() -> None:
@@ -171,6 +193,7 @@ def main() -> int:
         ("artifact templates", validate_artifact_templates),
         ("schemas", validate_schemas),
         ("project bootstrap", validate_bootstrap),
+        ("no legacy .project/ paths", validate_no_legacy_project_path),
         ("local Markdown links", validate_local_links),
         ("adapter syntax", validate_adapter),
     ]

@@ -1,8 +1,8 @@
 # Project Master Integration Review
 
-Review date: 2026-09-22
+Review date: 2026-09-22 (updated for the two-repository project shape and the shared decision protocol)
 
-This static review covers all ten skills, shared contracts, templates, schemas, examples, defaults, project entry files, and local-link adapters. It checks the written system as one operating model. Runtime discovery and a real-project pilot remain separate activities.
+This static review covers all ten skills, shared contracts, templates, schemas, examples, defaults, and local-link adapters. It checks the written system as one operating model. Runtime discovery and a real-project pilot remain separate activities.
 
 ## 1. Authority review
 
@@ -36,13 +36,14 @@ No full specialist pipeline is mandatory. Routine authorized work can proceed di
 
 | Scenario | Flow checked | Result |
 | --- | --- | --- |
-| New project | Mastermind creates and verifies bootstrap → relevant domain drafts → consolidated owner review → approved artifacts → implementation → Enforcer | Coherent. Bootstrap precedes business discussion; empty specialist folders and unnecessary ADRs or CHGs are avoided. |
-| Existing-project backfill | Mastermind safely integrates bootstrap as unassessed → Enforcer observation inventory → specialist reconstructions → owner review → approved baseline | Coherent. Existing instructions are preserved; code and tests remain evidence until the owner approves reconstructed intent. |
-| Consequential feature | CHG → affected specialists → warranted ADR → exact review packet → canonical artifact promotion → implementation → verification | Coherent after defining separate proposed replacement files and distinct CHG implementation state. |
-| Routine implementation fix | Read approved context → implement within authorized scope → targeted check → optional Enforcer finding | Coherent. No unnecessary CHG, ADR, or owner review is required. |
+| New project | Mastermind creates and verifies `.project-meta/` and an empty `workspace/` as sibling git repositories → relevant domain drafts → consolidated owner review → approved artifacts → implementation in `workspace/` → Enforcer | Coherent. Bootstrap precedes business discussion; empty specialist folders and unnecessary ADRs or CHGs are avoided. |
+| Existing-project backfill | Mastermind snapshots the repository's Git state → restructures the current root in place with the complete repository under `workspace/` → verifies unchanged Git state → bootstraps sibling `.project-meta/` → Enforcer observation inventory → specialist reconstructions → owner review → approved baseline | Coherent for standalone repositories. The existing `.git`, history, remotes, branches, tracked files, and uncommitted files move together; linked worktrees require a dedicated conversion. |
+| Consequential feature | CHG → affected specialists follow the shared decision protocol (recommend, then ask only when blocked) → warranted ADR → exact review packet → canonical artifact promotion → implementation in `workspace/` → verification | Coherent after defining separate proposed replacement files, distinct CHG implementation state, and the shared decision protocol. |
+| Routine implementation fix | Read approved context → implement within authorized scope inside `workspace/` → targeted check → optional Enforcer finding | Coherent. No unnecessary CHG, ADR, or owner review is required. |
 | Conflicting approved artifacts | Name both sources → pause affected work → Mastermind presents focused choice → owner decides → owning specialists revise artifacts | Coherent. Neither code, recency, status, nor ADR automatically wins. |
 | Database migration | Business policy → technical boundary → data design → owner approval → implementation handoff → separate operational authorization → verification | Coherent. Approving the schema does not authorize executing against real data. |
-| UI proposal and review | Approved or labeled draft UX → design rules and preview → prototype with simulations → rendered UI review → targeted corrections or upstream proposal | Coherent. Prototype and review evidence never approve product, UX, or design intent. |
+| UI proposal and review | Approved or labeled draft UX → design rules and a disposable preview in `.project-meta/prototype/`, isolated from `workspace/` → rendered UI review → targeted corrections or upstream proposal | Coherent. Prototype and review evidence never approve product, UX, or design intent, and the prototype's own lightweight stack never touches `workspace/`. |
+| Specialist decision under the shared protocol | Technical/Data/UX/Design specialist analyzes constraints → proposes one decisive recommendation with rationale → proceeds as labeled draft if reversible, or bundles into a review packet if consequential → asks only when a real blocker (missing owner-owned intent, source conflict, high-cost/hard-to-reverse choice, or pure preference fork) applies, batching any such questions once | Coherent. No specialist contract requires a question before a recommendation; each explicitly points to the shared protocol in SKILL-CONTRACT.md instead of restating its own wording. |
 
 ## 4. Artifact lifecycle review
 
@@ -61,14 +62,15 @@ CHG records now separate owner-review `status` from `implementation_state`. Evid
 The following contracts align:
 
 - Global skills and defaults are read-only during managed-project work.
-- Project artifacts and evidence stay under the managed project's `.project/`.
-- Implementation stays in project code directories.
+- Project artifacts, decisions, and the disposable prototype stay under the managed project's private `.project-meta/`; evidence stays there too.
+- Implementation stays inside the managed project's `workspace/`, a separate repository carrying no Project Master trace.
+- `.project-meta/` and `workspace/` are found by directory structure — the nearest ancestor containing both as siblings — never by a symlink or an in-repo pointer file, so the convention holds identically across devices and operating systems.
 - `project.yaml` configures directories, default approval categories, selected profile, and overrides; it does not replace domain artifacts.
 - `STATUS.md` is derived and links underlying sources.
 - Decision and change IDs use `ADR-###` and `CHG-###`.
 - A selected technology profile fills unresolved choices but does not override approved project architecture.
-- Project entry files lead agents to the canonical `.project/README.md` bootstrap.
-- Mastermind performs new-project and existing-project bootstrap through a deterministic helper before planning or backfill analysis.
+- Mastermind performs new-project and existing-project bootstrap through a deterministic helper. For backfill, it restructures a standalone repository in place under `workspace/` and verifies that Git HEAD, remotes, and working-tree state are unchanged.
+- Every specialist decision follows the shared decision protocol in SKILL-CONTRACT.md: recommend by default, ask only when genuinely blocked, and batch any real blockers into one consolidated question rather than a running interrogation.
 - All ten skills use the common fourteen-section contract.
 
 The reusable validator in `tools/validate-library.py` checks the skill set and headings, frontmatter basics, JSON syntax, template metadata, required bootstrap files, local Markdown links, adapter shell syntax, and exact CHG implementation-state agreement.
@@ -94,6 +96,10 @@ Validation completed successfully on 2026-09-22:
 | Handoffs were distributed across skills but hard to inspect | Added one cross-skill handoff and authority map |
 | Initialization and common operating flows were spread across several files | Added [OPERATING-GUIDE.md](OPERATING-GUIDE.md) |
 | Project onboarding required manual copying and placeholder edits | Added Mastermind bootstrap modes and a collision-safe helper that configures new or existing projects before planning |
+| A single `.project/` beside code made it hard to share a project's implementation without also exposing AI-authored artifacts, and offered no real version history independent of the code repository | Split the managed project into two sibling repositories: private `.project-meta/` (context, decisions, changes, review evidence, and a disposable `prototype/`) and `workspace/` (real implementation, shareable with collaborators with no trace of Project Master). Every skill's artifact paths, the bootstrap helper, and all shared docs were updated to the new structure. |
+| Locating a project depended on an in-repo pointer file, which does not survive being gitignored, does not port across devices with different home directories, and put a Project Master trace inside the shared code repository | Replaced it with directory-structure discovery: the nearest ancestor containing both `.project-meta/` and `workspace/` as siblings. Pure relative-path convention, so it holds identically on any device or OS; no symlink or pointer file is created or required. A skill that cannot find this pattern fails clearly rather than guessing a root or silently bootstrapping one. |
+| UI Prototyper wrote a rendered candidate directly into the project's real frontend folder, mixing throwaway exploration with production code and forcing it to match the real stack | Gave UI Prototyper its own `.project-meta/prototype/` folder with its own disposable, lightweight tooling, decoupled from `workspace/`'s stack and conventions. Dropped the pixel/icon-fidelity expectation: the candidate only needs to convey screens, states, and flow. |
+| Specialist contracts permitted a decisive recommendation but did not make it the default, so a session could interrogate the owner with a question per choice instead of proposing one | Added a shared decision protocol to SKILL-CONTRACT.md: analyze, recommend decisively with rationale, proceed as a labeled draft when reversible, bundle consequential choices into one packet, and ask only under a bounded set of real blockers — batched once, never a drip of follow-ups. Technical, Data, UX, and Design Architect point to it from their comparison step; Business Architect gets a narrower version reflecting that business intent is inherently owner-owned. |
 
 ## Remaining validation boundary
 

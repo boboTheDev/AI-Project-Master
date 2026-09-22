@@ -19,7 +19,7 @@ The concrete proposed choice, its evidence and alternatives, affected artifact r
 
 ## REQUIRED ARTIFACTS
 
-Read `.project/README.md`, `project.yaml`, relevant current approved artifacts and proposed revisions, and records in the manifest's `decision_directory`. Confirm the next ID from actual files; do not rely on `STATUS.md` alone. During backfill, treat inferred choices as draft even when code implements them.
+Read `.project-meta/project/README.md`, `project.yaml`, relevant current approved artifacts and proposed revisions, and records in the manifest's `decision_directory`. Confirm the next ID from actual files; do not rely on `STATUS.md` alone. During backfill, treat inferred choices as draft even when `workspace/` code implements them.
 
 ## OPTIONAL ARTIFACTS
 

@@ -1,29 +1,34 @@
 # Project Master Operating Guide
 
-Use Project Master as a global read-only skill library. A managed project keeps all of its own intent, decisions, coordination records, evidence, and implementation inside that project's repository.
+Use Project Master as a global read-only skill library. A managed project is a project root with two sibling repositories: `.project-meta/` (private — intent, decisions, coordination records, evidence, and a disposable prototype) and `workspace/` (the real implementation, shared with collaborators). Neither contains a trace of the other.
 
 ## 1. Initialize a managed project through Mastermind
 
-Open the intended parent directory for a new project or the repository root for an existing project, then invoke Mastermind in natural language:
+Open the intended parent directory for a new project or the root of an existing Git repository, then invoke Mastermind in natural language:
 
 - “Use Mastermind. Create a new project called Acme here, then help me define its business model.”
 - “Use Mastermind. Backfill this existing project.”
 
-For a new project, Mastermind must create and verify the project bootstrap before asking business, product, architecture, data, UX, or design questions. This gives every useful draft a project-local home from the start. If the project name or location is unclear, Mastermind asks only for the missing setup choice first.
+For a new project, Mastermind must create and verify `.project-meta/` and an empty `workspace/` as siblings before asking business, product, architecture, data, UX, or design questions. This gives every useful draft a project-local home from the start. If the project name or location is unclear, Mastermind asks only for the missing setup choice first.
 
-For an existing project, Mastermind confirms the repository root, adds only missing bootstrap files, and preserves existing instructions. It merges Project Master entry guidance into existing `AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md` where needed instead of replacing them.
+For an existing project, Mastermind verifies that the current directory is the repository root, records its Git HEAD, remotes, and working-tree state, then restructures that directory in place. All existing entries, including `.git` and uncommitted files, move together under a new `workspace/` child. Mastermind verifies the same Git state afterward and creates `.project-meta/` beside it. If the repository is already arranged as `workspace/`, no restructure is needed. There are no entry files to merge because a managed project is found by directory structure, not by an in-repo pointer.
 
-Mastermind uses [mastermind/scripts/bootstrap_project.py](mastermind/scripts/bootstrap_project.py) for deterministic setup. The helper creates a new project folder or integrates an existing repository, fills the project name and absolute library path, preserves existing files, and reports instruction files requiring an intelligent merge. Its detailed procedure is in [mastermind/references/project-bootstrap.md](mastermind/references/project-bootstrap.md).
+Mastermind uses [mastermind/scripts/bootstrap_project.py](mastermind/scripts/bootstrap_project.py) for deterministic setup. The helper creates `.project-meta/` and configures it as its own Git repository, creates an empty `workspace/` Git repository for a new project, and restructures a normal existing repository under `workspace/` without reinitializing or replacing its Git data. Its detailed procedure is in [mastermind/references/project-bootstrap.md](mastermind/references/project-bootstrap.md).
 
 After initialization:
 
-1. `.project/README.md` identifies this global library and the project-local write boundary.
-2. `.project/project.yaml` contains the project name and default review policy.
-3. `.project/STATUS.md` begins `Unassessed` until evidence supports a stronger state.
+1. `.project-meta/project/README.md` identifies this global library and the project-local write boundary.
+2. `.project-meta/project/project.yaml` contains the project name and default review policy.
+3. `.project-meta/project/STATUS.md` begins `Unassessed` until evidence supports a stronger state.
 4. `tech_profile` remains `null` unless the owner selects a defined profile.
-5. Specialist folders are created only when actual work needs them.
+5. `.project-meta/` and `workspace/` are each their own git repository; the helper configures no remote for either.
+6. Specialist folders are created only when actual work needs them.
 
 The optional personal skill links in [adapters/README.md](adapters/README.md) make the ten skills discoverable to supported runtimes. Skill installation is a one-time device action; Mastermind then performs project initialization from the conversation.
+
+### Finding an already-initialized project
+
+There is no pointer file and no symlink between `.project-meta/` and `workspace/`. Every skill locates the project root by finding the nearest ancestor — from the current directory, or by walking upward — that directly contains both as siblings. This is relative-path convention only, so it works identically across devices and operating systems. If no such ancestor exists, the project is not initialized at this location: report that plainly and stop. Do not guess a root or silently bootstrap one unless the owner explicitly asks to create or backfill a project.
 
 ## 2. Start through Mastermind
 
@@ -42,12 +47,12 @@ Mastermind identifies the requested stopping point and invokes only affected ski
 
 | Request | Default handling |
 | --- | --- |
-| New project | Create and verify the project folder and bootstrap first, then continue with the requested discovery or planning |
+| New project | Create and verify `.project-meta/` and an empty `workspace/` as siblings first, then continue with the requested discovery or planning |
 | Status | Check `STATUS.md` against linked sources and report supported state; do not start an audit or change automatically |
 | Brainstorming | Use Business Architect first and add affected specialists only when needed; finish with a concrete draft or approved planning outcome |
-| Routine implementation | Read approved context, implement within scope, run targeted checks, and use Enforcer only when alignment is in question |
+| Routine implementation | Read approved context, implement within scope inside `workspace/`, run targeted checks, and use Enforcer only when alignment is in question |
 | Consequential change | Create a CHG record, route affected domains, prepare concrete revisions and warranted ADRs, request owner review, then implement if requested |
-| Existing-project backfill | Integrate the bootstrap first, inventory observed behavior, reconstruct only useful drafts, obtain owner review, then establish the approved baseline |
+| Existing-project backfill | Restructure the existing repository in place under `workspace/`, bootstrap sibling `.project-meta/`, verify Git state, inventory observed behavior, reconstruct useful drafts, obtain owner review, then establish the approved baseline |
 | Conflict | Name the exact approved sources and affected work, obtain the owner's decision, and update the owning artifacts; do not pick a winner silently |
 
 ## 4. Use the authority model
@@ -58,8 +63,10 @@ Read [AUTHORITY-MAP.md](AUTHORITY-MAP.md) when ownership is unclear. In short:
 - ADRs explain meaningful choices.
 - CHG records coordinate review and execution.
 - `STATUS.md` indexes state.
-- Code, tests, schema, rendered UI, Enforcer findings, and UI reviews provide evidence.
+- `workspace/` code, tests, schema, rendered UI, Enforcer findings, and UI reviews provide evidence.
 - Global defaults fill unresolved gaps only after project choices and explicit owner instructions.
+
+Every specialist choice follows the shared decision protocol in [SKILL-CONTRACT.md](SKILL-CONTRACT.md): decide by default, ask only when genuinely blocked, and consolidate any real blockers into one batch rather than a question per step.
 
 The owner is the sole governor of consequential intent. A concrete owner instruction can resolve a choice, but the affected project artifacts still need to be updated so future work does not depend on conversation history.
 
@@ -112,7 +119,7 @@ An implementation handoff names:
 
 - approved source revisions;
 - affected behavior and interfaces;
-- likely code, schema, and configuration areas;
+- likely `workspace/` code, schema, and configuration areas;
 - rollout or migration constraints;
 - material states and failure paths;
 - checks needed to show alignment.
@@ -123,14 +130,15 @@ Use Enforcer for a focused alignment check. It compares observed implementation 
 
 ## 8. Backfill an existing project
 
-1. Invoke Mastermind from the existing repository root.
-2. Bootstrap `.project/` with `STATUS.md` marked `Unassessed`, preserving existing files and merging agent entry guidance safely.
-3. Use Enforcer to inventory code, configuration, schema, migrations, tests, documentation, and rendered behavior.
-4. Label findings as observations because no approved baseline exists yet.
-5. Ask affected specialists to reconstruct only useful domain artifacts as `draft` or `needs-review`.
-6. Separate observed behavior, inferred intent, contradictions, and unknowns.
-7. Ask the owner only about choices evidence cannot establish, and give the owner small, concrete review packets.
-8. After approval, promote the reviewed artifacts and update `STATUS.md`. Future Enforcer checks can use them as the baseline.
+1. Invoke Mastermind from the existing Git repository root.
+2. Verify the repository and restructure that same directory into the managed-project root: move all existing entries together under `workspace/`, preserving `.git`, remotes, history, branches, and uncommitted files.
+3. Bootstrap `.project-meta/` beside `workspace/` with `STATUS.md` marked `Unassessed`, then verify that the repository's Git state matches its pre-restructure state.
+4. Use Enforcer to inventory `workspace/` code, configuration, schema, migrations, tests, documentation, and rendered behavior.
+5. Label findings as observations because no approved baseline exists yet.
+6. Ask affected specialists to reconstruct only useful domain artifacts as `draft` or `needs-review`.
+7. Separate observed behavior, inferred intent, contradictions, and unknowns.
+8. Ask the owner only about choices evidence cannot establish, and give the owner small, concrete review packets.
+9. After approval, promote the reviewed artifacts and update `STATUS.md`. Future Enforcer checks can use them as the baseline.
 
 ## 9. Maintain `STATUS.md`
 
@@ -149,8 +157,8 @@ Use `Unassessed` or `Unknown` when evidence is insufficient. For authoritative d
 During managed-project work:
 
 - Read Project Master from its configured global path.
-- Write project knowledge and evidence only under that project's `.project/`.
-- Write implementation only inside that project's code directories.
+- Write project knowledge, decisions, and evidence only under that project's `.project-meta/project/`; write a disposable prototype only under `.project-meta/prototype/`.
+- Write implementation only inside that project's `workspace/`.
 - Change this global library only during intentional Project Master maintenance.
 
-The library can be updated centrally without copying its skills into every project. Project artifacts remain local and continue to preserve the project's approved intent.
+The library can be updated centrally without copying its skills into every project. Project artifacts remain local and continue to preserve the project's approved intent. Because `.project-meta/` and `workspace/` are separate repositories, `workspace/` can be pushed to a shared or team remote with no trace of Project Master, while `.project-meta/` keeps its own private history, pushed to a private remote or left local, entirely at the owner's discretion.

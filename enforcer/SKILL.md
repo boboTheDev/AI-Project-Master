@@ -19,7 +19,7 @@ The requested scope and stopping point; approved artifacts and decisions; releva
 
 ## REQUIRED ARTIFACTS
 
-Read `.project/README.md`, `project.yaml`, `STATUS.md`, and the relevant underlying approved artifacts and decisions when present. Check the actual artifact and its approval metadata; `STATUS.md` is only an index. During backfill, missing or unapproved artifacts provide no approved baseline.
+Read `.project-meta/project/README.md`, `project.yaml`, `STATUS.md`, and the relevant underlying approved artifacts and decisions when present. Check the actual artifact and its approval metadata; `STATUS.md` is only an index. During backfill, missing or unapproved artifacts provide no approved baseline.
 
 ## OPTIONAL ARTIFACTS
 
@@ -27,11 +27,11 @@ Read scoped change records, CI or browser evidence, logs, existing documentation
 
 ## ALLOWED READS
 
-The configured global library and the managed project's repository and running interface, within available permissions.
+The configured global library, `.project-meta/`, and `workspace/`, including its running interface, within available permissions.
 
 ## ALLOWED WRITES
 
-Scoped findings and retained evidence under the project's `.project/changes/` or another relevant `.project/` area; draft backfill artifacts in their project-local domain folders; accurate `STATUS.md` links; meaning-preserving corrections to project documentation; and routine implementation fixes in code areas authorized by the task. Do not write project findings into the global library.
+Scoped findings and retained evidence under `.project-meta/project/changes/` or another relevant `.project-meta/project/` area; draft backfill artifacts in their project-local domain folders; accurate `STATUS.md` links; meaning-preserving corrections to project documentation; and routine implementation fixes inside `workspace/` authorized by the task. Do not write project findings into the global library.
 
 ## DEPENDENCIES
 
@@ -48,7 +48,7 @@ Mastermind coordinates unresolved intent and cross-domain impact. The owning spe
 
 ## OUTPUTS
 
-A concise evidence-linked result for the requested scope. Persist material findings or a requested checkpoint report under `.project/changes/` or the affected review area, using `templates/artifacts/enforcer-review.md` if helpful. Produce draft domain artifacts for requested backfill, authorized fixes with verification, and accurate `STATUS.md` links. An Enforcer report records evidence and disposition; it does not become an approved source of intent.
+A concise evidence-linked result for the requested scope. Persist material findings or a requested checkpoint report under `.project-meta/project/changes/` or the affected review area, using `templates/artifacts/enforcer-review.md` if helpful. Produce draft domain artifacts for requested backfill, authorized fixes with verification, and accurate `STATUS.md` links. An Enforcer report records evidence and disposition; it does not become an approved source of intent.
 
 ## APPROVAL REQUIREMENTS
 

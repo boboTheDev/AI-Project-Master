@@ -1,6 +1,6 @@
 # UI Review
 
-This is a rendered-evidence report, not an approval of UX or design intent. Keep it under the managed project's `.project/ui/` when material findings or a requested review need a durable record.
+This is a rendered-evidence report, not an approval of UX or design intent. Keep it under the managed project's `.project-meta/project/ui/` when material findings or a requested review need a durable record.
 
 ## Scope and baseline
 

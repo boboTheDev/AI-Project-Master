@@ -19,7 +19,7 @@ The requested review scope and stopping point; approved or labeled draft UX and 
 
 ## REQUIRED ARTIFACTS
 
-Read `.project/README.md`, `project.yaml`, `STATUS.md`, affected UX and design artifacts, and relevant decisions when present. Check approval metadata and the prototype's draft dependencies. If the baseline is absent or draft, label the review exploratory rather than claiming compliance with approved intent.
+Read `.project-meta/project/README.md`, `project.yaml`, `STATUS.md`, affected UX and design artifacts, and relevant decisions when present. Check approval metadata and the reviewed candidate's draft dependencies. If the baseline is absent or draft, label the review exploratory rather than claiming compliance with approved intent.
 
 ## OPTIONAL ARTIFACTS
 
@@ -27,11 +27,11 @@ Read prototype notes, mock data, browser test results, accessibility reports, cu
 
 ## ALLOWED READS
 
-The configured global library, project artifacts and code, and the rendered application within available permissions.
+The configured global library, project artifacts, `.project-meta/prototype/` or `workspace/` code depending on what is being reviewed, and the rendered application within available permissions.
 
 ## ALLOWED WRITES
 
-Scoped `.project/ui/` review reports and retained evidence, and accurate `STATUS.md` links for persistent material findings. Make routine UI implementation corrections in authorized code areas only when the task includes fixes; proposed UX or design changes go through their owning specialists.
+Scoped `.project-meta/project/ui/` review reports and retained evidence, and accurate `STATUS.md` links for persistent material findings. Make routine UI implementation corrections only inside the reviewed area (`.project-meta/prototype/` or `workspace/`) when the task includes fixes; proposed UX or design changes go through their owning specialists.
 
 ## DEPENDENCIES
 
@@ -43,12 +43,12 @@ UX Architect owns journeys, content hierarchy, and interaction outcomes; Design 
 2. Observe the actual render with Playwright or the project's existing browser or capture tooling. Inspect hierarchy, copy against approved terminology, spacing, typography, density, component consistency, overflow, responsive layout, and visual states. Exercise material actions, keyboard and focus paths, feedback, and recovery. Use accessibility tooling where available, then check relevant behavior manually; an automated scan or screenshot alone cannot prove the full experience.
 3. For each relevant finding, record route, viewport, state, expected versus observed, reproducible evidence, severity, owning layer, and proposed disposition. Use **blocking** for an unusable required path or serious access barrier, **material** for meaningful task or design harm, and **minor** for bounded defects. Assign UX, design system, or implementation as the owning layer. Label subjective preferences as suggestions rather than proven drift; inaccessible or unseen states are unverified, not passing.
 4. Fix a clear implementation mismatch only when the task authorizes edits, approved intent is unambiguous, and the change is bounded. Revisit the same route, viewport, state, and interaction after the fix; retain before/after evidence when it materially helps review. Route a proposed UX or design rule through Mastermind and its owning specialist for the owner's concrete review. Pause only dependent work.
-5. If a full-page capture omits lazy, animated, or virtualized content, scroll and inspect settled viewport captures before drawing a conclusion. Retain captures under `.project/ui/` only when useful for owner review or future comparison; transient evidence can remain outside durable project memory.
+5. If a full-page capture omits lazy, animated, or virtualized content, scroll and inspect settled viewport captures before drawing a conclusion. Retain captures under `.project-meta/project/ui/` only when useful for owner review or future comparison; transient evidence can remain outside durable project memory.
 6. Give findings a disposition: fixed and rechecked, open with an owner or specialist, suggestion, or unverified with a stated gap. Persist material findings or a requested review, and link them from `STATUS.md` when they remain relevant. A clean narrow check can be reported in the response without creating a file.
 
 ## OUTPUTS
 
-A concise evidence-linked result for the requested scope. Persist material findings or a requested review under `.project/ui/`, using `templates/artifacts/ui-review.md` if helpful. Include checked routes, states, viewports, interactions, limitations, and dispositions. The report records evidence; it does not approve a UX or design revision.
+A concise evidence-linked result for the requested scope. Persist material findings or a requested review under `.project-meta/project/ui/`, using `templates/artifacts/ui-review.md` if helpful. Include checked routes, states, viewports, interactions, limitations, and dispositions. The report records evidence; it does not approve a UX or design revision.
 
 ## APPROVAL REQUIREMENTS
 

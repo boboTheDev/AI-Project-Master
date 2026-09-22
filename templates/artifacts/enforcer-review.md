@@ -1,6 +1,6 @@
 # Enforcer Review
 
-This is an evidence record, not an approval of product intent. Keep it under the managed project's `.project/changes/` or affected review folder when a finding needs to persist.
+This is an evidence record, not an approval of product intent. Keep it under the managed project's `.project-meta/project/changes/` or affected review folder when a finding needs to persist.
 
 ## Scope and baseline
 

@@ -1,13 +1,13 @@
-# Mastermind fills project_name during bootstrap. Paths are relative to this project's root.
+# Mastermind fills project_name during bootstrap. Paths are relative to .project-meta/project/.
 project_name: REPLACE_WITH_PROJECT_NAME
-artifact_root: .project
+artifact_root: .
 artifact_version: 1
 
 # Set only after the project selects a defined global technology profile.
 tech_profile: null
 
-decision_directory: .project/decisions
-change_directory: .project/changes
+decision_directory: decisions
+change_directory: changes
 
 # Default categories of consequential intent needing the sole owner's review.
 approval_required_for:
