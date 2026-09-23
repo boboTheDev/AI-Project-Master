@@ -1,64 +1,82 @@
 # Project Bootstrap Procedure
 
-Read this procedure when the owner asks to create a new managed project or backfill an existing repository.
+Read this procedure when the owner asks to create a managed project or backfill an existing repository.
 
 ## Project shape
 
-A managed project is a project root with two sibling directories:
+A managed project root contains local runtime adapters and two physically separate sibling repositories:
 
-- `<root>/.project-meta/` — a private repository holding `project/` (context, approved intent, decisions, changes, review evidence) and `prototype/` (a disposable frontend candidate). It is never pushed to a shared or team remote.
-- `<root>/workspace/` — the real implementation, its own separate repository, pushed to the shared or team remote. For backfill, this is the owner's existing repository moved intact beneath the managed-project root. It carries no Project Master file, document, or reference of any kind.
+```text
+<root>/
+├── AGENTS.md          # local runtime adapter, outside both repositories
+├── CLAUDE.md          # local runtime adapter, outside both repositories
+├── .project-meta/     # private Project Master repository
+└── workspace/         # real implementation repository
+```
 
-There is no pointer file inside `workspace/` and no symlink between the two directories. An agent finds the project root by locating the nearest ancestor, from the current directory or by walking upward, that directly contains both `.project-meta/` and `workspace/`. This is pure relative-path convention, so it holds identically on every device and operating system. If no such ancestor exists, the project is not initialized at this location; report that plainly and do not guess a root or silently bootstrap one.
+`.project-meta/` holds `project/` for intent, decisions, changes, and evidence, plus `prototype/` for disposable UI work. `workspace/` contains the implementation and no Project Master file or reference. The root adapters may refer to `.project-meta/`; they are intentionally outside both repositories.
+
+Open and run Codex, Claude Code, or another filesystem-scoped agent from `<root>`. Opening `workspace/` alone can hide its parent and the private repository from runtime discovery or filesystem permissions. An already running session may need to be relaunched from the root after bootstrap.
 
 ## Choose the project root
 
-For a new project, resolve the intended parent directory and project display name before discussing business or product behavior. Infer the folder name from the project name when the choice is ordinary. Ask one focused question only when the target or naming choice is materially ambiguous.
+For a new project, resolve the parent directory and display name before discussing product behavior. Infer an ordinary folder slug. Ask only when the location or name cannot be resolved honestly.
 
-For an existing project, use the current repository root as the managed-project root. The helper verifies that it is a standalone Git repository, snapshots its HEAD, remotes, and working-tree state, then moves every existing entry together under a new `workspace/` child. Moving `.git` with the working tree preserves history, branches, remotes, configuration, tracked files, and uncommitted files. The outer directory remains at the same path and becomes the parent of sibling `.project-meta/` and `workspace/` directories. If the repository is already arranged under `workspace/`, the helper retains it there.
+For an existing project, use its current standalone Git repository root. Bootstrap keeps that outer path, moves the complete repository under `workspace/`, and creates `.project-meta/` beside it. Moving `.git` with the working tree preserves history, branch, remotes, local Git configuration, tracked changes, and untracked files. A project already arranged with a populated Git repository under `workspace/` is accepted without moving it. Linked worktrees are rejected because moving their `.git` file would require a dedicated conversion.
 
-Do not create a managed project inside the global Project Master library. Filesystem permission prompts imposed by the runtime are separate from Project Master's owner-approval lifecycle.
+Do not create a managed project inside the global Project Master library. Runtime filesystem permission prompts remain separate from Project Master's owner approval.
 
-## Run the deterministic bootstrap
+## Run the helper
 
-The helper lives at `mastermind/scripts/bootstrap_project.py` under the Project Master library.
+The helper is `mastermind/scripts/bootstrap_project.py` in the Project Master library.
 
 For a new project:
 
 ```sh
-python3 /absolute/path/to/project-master/mastermind/scripts/bootstrap_project.py new \
-  --target /absolute/path/to/parent/project-root \
+python3 /path/to/project-master/mastermind/scripts/bootstrap_project.py new \
+  --target /path/to/parent/project-root \
   --name "Project display name"
 ```
 
-For an existing project, run from its current repository root:
+For an existing project:
 
 ```sh
-python3 /absolute/path/to/project-master/mastermind/scripts/bootstrap_project.py existing \
-  --target /absolute/path/to/project-root
+python3 /path/to/project-master/mastermind/scripts/bootstrap_project.py existing \
+  --target /path/to/project-root
 ```
 
-Use `--dry-run` first when the target already contains files or its state is uncertain. The helper:
+Use `--dry-run` when the target or intended moves need inspection. If no usable Git identity is configured, pass both `--git-user-name` and `--git-user-email`; otherwise the helper stops before changing the target.
 
-- creates `.project-meta/` and configures it as a fresh git repository;
-- in `new` mode, creates an empty `workspace/` and initializes it as a fresh git repository, refusing if either directory already has content;
-- in `existing` mode, accepts either a normal standalone Git repository root or a project already arranged with a populated Git repository under `workspace/`;
-- for a normal repository root, moves its complete contents under `workspace/` and verifies that HEAD, remotes, and working-tree state match the pre-move snapshot;
-- preserves the existing `.git` directory rather than initializing or replacing it;
-- fills the project name and absolute Project Master library path inside `.project-meta/`;
-- preserves every existing file it encounters; and
-- refuses to place a managed project inside the global library.
+The helper performs the operation transactionally:
 
-The helper never configures a remote for either repository. Add the shared/team remote to `workspace/` and, if the owner wants durable off-device history for `.project-meta/`, a private remote for it, as separate steps outside this helper.
+1. It validates the target mode, templates, collisions, Git repository shape, Git identity, and existing `workspace/` before any target mutation.
+2. It prepares `.project-meta/` and its first commit in a temporary sibling directory.
+3. For a new project, it prepares a fresh empty Git repository for `workspace/`. For backfill, it snapshots the existing repository and moves it intact under `workspace/`.
+4. It installs root `AGENTS.md` and `CLAUDE.md`, then validates both repositories, adapters, and the backfilled Git snapshot.
+5. If a handled filesystem or validation failure occurs after mutation starts, it removes generated adapters and metadata and restores the original folder layout. A failed backfill must not leave a half-managed project.
+
+The initial `.project-meta/` commit uses the existing workspace repository's effective Git identity during backfill, or the configured/requested identity for a new project. The helper does not commit to `workspace/` and does not configure a remote for either repository.
+
+## Resolve the global library on each device
+
+Durable project files store the stable library ID `project-master`, never an absolute device path. Resolve the installed library in this order:
+
+1. a valid `PROJECT_MASTER_HOME` environment variable;
+2. the canonical location of the invoked Project Master skill;
+3. `.project-meta/local.yaml`, which is device-local and ignored by the metadata repository;
+4. one focused owner question when none of the above resolves.
+
+Bootstrap writes `local.yaml` as a convenience for the current device. Copy `local.example.yaml` when configuring another device manually.
 
 ## Verify before planning
 
 Confirm that:
 
-1. `.project-meta/project/README.md` contains the actual absolute Project Master path.
-2. `.project-meta/project/project.yaml` contains the intended project name.
-3. `.project-meta/project/STATUS.md` exists and begins unassessed.
-4. `.project-meta/` and `workspace/` are each their own git repository, and `workspace/` contains no Project Master file.
-5. For backfill, the existing repository's HEAD, remotes, and working-tree state match their pre-restructure values.
+1. `AGENTS.md` and `CLAUDE.md` exist at the project root, outside both repositories.
+2. `.project-meta/project/project.yaml` contains the intended project name and stable library ID.
+3. `.project-meta/project/STATUS.md` begins unassessed.
+4. `.project-meta/` has one baseline commit and ignores `local.yaml` plus generated prototype content.
+5. `.project-meta/` and `workspace/` are distinct Git roots; `workspace/` contains no Project Master trace.
+6. For backfill, HEAD, branch, remotes, local Git configuration, tracked changes, and untracked files match the pre-restructure snapshot.
 
-After these checks, treat the project as initialized. Set the working root to the project root containing both siblings, read `.project-meta/project/README.md`, and only then begin brainstorming, backfill analysis, planning, or implementation. Create specialist directories and artifacts only when the work needs them.
+Then relaunch or set the agent's working root to the directory containing the adapters and both repositories. Read `.project-meta/project/README.md` before continuing with brainstorming, analysis, planning, or implementation. Create specialist directories only when work needs them.

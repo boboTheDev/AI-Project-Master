@@ -1,20 +1,22 @@
 # Managed Project Bootstrap
 
-This `.project-meta/` directory is a private repository that holds this project's persistent intent, decisions, prototype, and state. It is a sibling of `workspace/`, the separate repository that holds the project's real implementation and is shared with collaborators. Project Master skills are reusable instructions at the global location below. Agents may read that library during project work and must put project-specific outputs only in this private repository or in `workspace/` as the write boundary below states.
+This `.project-meta/` directory is a private repository that holds this project's persistent intent, decisions, prototype, and state. It is a sibling of `workspace/`, the separate repository that holds the project's real implementation and is shared with collaborators. Project Master skills are reusable global instructions resolved as described below. Agents may read that library during project work and must put project-specific outputs only in this private repository or in `workspace/` as the write boundary below states.
 
 ## Bootstrap configuration
 
-- **Project Master library:** `REPLACE_WITH_ABSOLUTE_PATH_TO_PROJECT_MASTER`
+- **Project Master library ID:** `project-master`
 - **Project root:** the parent directory containing this `.project-meta/` directory and its sibling `workspace/`
 - **Project owner:** one person, represented in artifacts as `project_owner`
 
-Replace the library path with the actual absolute path on this device. If it is missing or inaccessible, resolve that before invoking Project Master skills.
+Resolve the global library on each device in this order: a valid `PROJECT_MASTER_HOME` environment variable, the canonical location of the invoked Project Master skill, then device-local `.project-meta/local.yaml`. The durable project files never store an absolute device path. If none resolves, ask the owner once for the local library location and write only `local.yaml`, which is ignored by this repository.
 
 For cross-skill ownership and operating procedure, consult `AUTHORITY-MAP.md` and `OPERATING-GUIDE.md` under the configured Project Master library.
 
 ## Finding this project
 
 There is no pointer file inside `workspace/` and no symlink between the two repositories. An agent locates a managed project by finding the nearest ancestor directory, from its current location or by walking upward, that directly contains both `.project-meta/` and `workspace/`. That ancestor is the project root. If no such directory exists, the project is not initialized here; report that plainly and do not guess a root or silently bootstrap one. This convention uses only relative directory structure, so it works identically across devices and operating systems.
+
+Run Codex, Claude Code, or another filesystem-scoped agent from the project root, not from `workspace/` alone. Root `AGENTS.md` and `CLAUDE.md` are generated local adapters outside both repositories; they route supported runtimes to this bootstrap without adding a Project Master trace to `workspace/`.
 
 ## Read and write map
 
@@ -36,6 +38,8 @@ Use `.project-meta/project/project.yaml` for project configuration and default r
 - Follow `approval_required_for` in `project.yaml` unless the owner explicitly authorizes a particular change or adjusts the policy. Routine implementation within approved scope, checks, and meaning-preserving corrections may complete without another approval step.
 - A change record coordinates work. Its `status` records owner review of that packet, while `implementation_state` records execution progress. It does not replace approval metadata on linked artifacts or ADRs.
 - Update `STATUS.md` when project state changes. It is a derived index and needs no separate owner approval when it accurately reflects the underlying artifacts.
+
+Commit this private repository at meaningful lifecycle checkpoints: the bootstrap baseline, a coherent `needs-review` packet, the corresponding approval and promotion, and verified or closed change state. Routine draft edits between checkpoints need no commit. Include relevant `CHG-###` or `ADR-###` identifiers in commit messages. Project Master never commits to `workspace/`; that repository follows its own project policy.
 
 ## Starting a task
 

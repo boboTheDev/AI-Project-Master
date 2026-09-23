@@ -1,0 +1,17 @@
+# Keep prototype source and configuration reviewable; ignore generated output.
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+.next/
+.nuxt/
+.svelte-kit/
+.vite/
+test-results/
+playwright-report/
+blob-report/
+*.log
+.env
+.env.*
+!.env.example

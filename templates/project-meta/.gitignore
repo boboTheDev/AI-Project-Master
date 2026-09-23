@@ -1,0 +1,24 @@
+# Device-local Project Master configuration
+/local.yaml
+
+# Common generated prototype content
+/prototype/node_modules/
+/prototype/dist/
+/prototype/build/
+/prototype/coverage/
+/prototype/.cache/
+/prototype/.next/
+/prototype/.nuxt/
+/prototype/.svelte-kit/
+/prototype/.vite/
+/prototype/test-results/
+/prototype/playwright-report/
+/prototype/blob-report/
+/prototype/*.log
+/prototype/.env
+/prototype/.env.*
+!/prototype/.env.example
+
+# Local operating-system files
+.DS_Store
+Thumbs.db

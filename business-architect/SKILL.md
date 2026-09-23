@@ -39,7 +39,7 @@ Receive scope from Mastermind when work spans domains. Send technical feasibilit
 
 ## PROCESS
 
-1. State the actor, problem, desired outcome, boundary, and observable success. Reuse approved terminology. Business intent is the owner's to set, so asking is often correct here, but follow the shared decision protocol in SKILL-CONTRACT.md: consolidate genuinely blocking questions into one batch, state a recommended default alongside each when a reasonable one exists, and draft with labeled assumptions rather than asking when a default can safely carry the conversation forward.
+1. State the actor, problem, desired outcome, boundary, and observable success. Reuse approved terminology. Business intent is the owner's to set, so asking is often correct here, but follow the shared decision protocol in SKILL-CONTRACT.md: consolidate all currently known blockers into one batch, recommend a default only when evidence supports one, and draft with labeled assumptions when a safe default can carry the conversation forward. Ask a later focused batch only when an answer or new evidence reveals a blocker that could not reasonably have been identified earlier.
 2. Map the smallest complete workflow, including material states, permissions, exceptions, recovery, and business rules. Challenge steps or rules that add no clear value.
 3. Mark consequential claims as sourced fact, approved intent, proposal, assumption, or open question where the reader encounters them. Cite evidence for sourced claims; do not equate current code with approval.
 4. Write testable acceptance criteria in product terms and trace them to the proposed rules. Separate invariant rules from examples. Identify questions that block an honest proposal.

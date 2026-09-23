@@ -3,6 +3,10 @@ project_name: REPLACE_WITH_PROJECT_NAME
 artifact_root: .
 artifact_version: 1
 
+project_master:
+  library_id: project-master
+  contract_version: 1
+
 # Set only after the project selects a defined global technology profile.
 tech_profile: null
 

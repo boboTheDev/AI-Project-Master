@@ -4,11 +4,20 @@
   "title": "Project Master manifest",
   "description": "Schema for a managed project's .project-meta/project/project.yaml. Paths are relative to .project-meta/project/.",
   "type": "object",
-  "required": ["project_name", "artifact_root", "artifact_version", "tech_profile", "decision_directory", "change_directory", "approval_required_for", "overrides"],
+  "required": ["project_name", "artifact_root", "artifact_version", "project_master", "tech_profile", "decision_directory", "change_directory", "approval_required_for", "overrides"],
   "properties": {
     "project_name": {"type": "string", "minLength": 1},
     "artifact_root": {"const": "."},
     "artifact_version": {"const": 1},
+    "project_master": {
+      "type": "object",
+      "required": ["library_id", "contract_version"],
+      "properties": {
+        "library_id": {"const": "project-master"},
+        "contract_version": {"const": 1}
+      },
+      "additionalProperties": false
+    },
     "tech_profile": {"type": ["string", "null"], "minLength": 1},
     "decision_directory": {"type": "string", "pattern": "^[A-Za-z0-9/_-]+$"},
     "change_directory": {"type": "string", "pattern": "^[A-Za-z0-9/_-]+$"},

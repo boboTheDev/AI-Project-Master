@@ -5,3 +5,5 @@ This folder holds a disposable, scoped frontend candidate built by UI Prototyper
 It uses its own lightweight tooling, chosen for the fastest path to a navigable render; it does not need to match `workspace/`'s stack, components, or conventions. Nothing here is implementation. Its code never graduates into `workspace/`; an approved UX or design change is carried there by the authorized coding agent working from the approved `.project-meta/project/` artifacts, not by copying prototype code.
 
 UI Prototyper may recreate or replace this folder's contents freely between requests. Durable review notes, when useful, belong in `.project-meta/project/ui/` using the library's prototype-notes template, not in this folder.
+
+Keep source, configuration, and an optional lockfile when they help reproduce a review candidate. The provided `.gitignore` excludes dependencies, builds, caches, browser-test output, logs, and local environment files. Never store secrets or real user data here.

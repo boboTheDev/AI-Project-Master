@@ -125,9 +125,14 @@ def validate_schemas() -> None:
 
 def validate_bootstrap() -> None:
     required = [
+        ROOT / "templates/project-root/AGENTS.md",
+        ROOT / "templates/project-root/CLAUDE.md",
+        ROOT / "templates/project-meta/.gitignore",
+        ROOT / "templates/project-meta/local.example.yaml",
         ROOT / "templates/project-meta/project/README.md",
         ROOT / "templates/project-meta/project/project.yaml",
         ROOT / "templates/project-meta/project/STATUS.md",
+        ROOT / "templates/project-meta/prototype/.gitignore",
         ROOT / "templates/project-meta/prototype/README.md",
     ]
     for path in required:
@@ -145,10 +150,21 @@ def validate_bootstrap() -> None:
     for key in json.loads((ROOT / "schemas/project-manifest.schema.json").read_text())["required"]:
         if not re.search(rf"^{re.escape(key)}:", manifest, re.MULTILINE):
             fail(f"manifest template missing required key: {key}")
+    if "library_id: project-master" not in manifest or "absolute" in manifest.lower():
+        fail("manifest must use the stable library ID without an absolute path")
+    meta_ignore = (ROOT / "templates/project-meta/.gitignore").read_text(encoding="utf-8")
+    if "/local.yaml" not in meta_ignore:
+        fail("metadata repository must ignore device-local library configuration")
+    if (ROOT / "templates/project-root/CLAUDE.md").read_text(encoding="utf-8").strip() != "@AGENTS.md":
+        fail("Claude root adapter must import the canonical root instructions")
     helper = ROOT / "mastermind/scripts/bootstrap_project.py"
     if not helper.is_file():
         fail("missing Mastermind bootstrap helper")
     ast.parse(helper.read_text(encoding="utf-8"), filename=str(helper))
+    behavior_validator = ROOT / "tools/validate-bootstrap.py"
+    if not behavior_validator.is_file():
+        fail("missing isolated bootstrap behavior validator")
+    ast.parse(behavior_validator.read_text(encoding="utf-8"), filename=str(behavior_validator))
 
 
 def validate_no_legacy_project_path() -> None:

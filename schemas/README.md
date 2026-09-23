@@ -4,7 +4,7 @@ These JSON Schemas describe the YAML data in `.project-meta/project/project.yaml
 
 Evidence and handoff reports such as an Enforcer review, UI review, or prototype notes may be plain Markdown without approval-lifecycle frontmatter. They record what was checked or demonstrated; they do not become approved intent.
 
-- `project-manifest.schema.json`: project discovery, paths, selected profile, and default approval categories.
+- `project-manifest.schema.json`: stable Project Master library identity and contract version, project paths, selected profile, and default approval categories. Device-local library paths stay in ignored `.project-meta/local.yaml` and are outside this durable schema.
 - `artifact-metadata.schema.json`: lifecycle state and required original approval evidence for `approved` and retained `superseded` revisions.
 - `decision-metadata.schema.json`: ADR identifiers, artifact lifecycle metadata, and a replacement link required when an ADR is superseded.
 - `change-metadata.schema.json`: CHG identifiers, owner-review status, independent implementation state, affected domains, and linked ADRs.

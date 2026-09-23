@@ -1,0 +1,3 @@
+# Copy to local.yaml only when runtime discovery cannot resolve the installed skill.
+# local.yaml is device-specific and ignored by the .project-meta repository.
+library_path: /absolute/path/to/project-master

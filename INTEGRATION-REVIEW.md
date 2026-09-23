@@ -2,7 +2,7 @@
 
 Review date: 2026-09-22 (updated for the two-repository project shape and the shared decision protocol)
 
-This static review covers all ten skills, shared contracts, templates, schemas, examples, defaults, and local-link adapters. It checks the written system as one operating model. Runtime discovery and a real-project pilot remain separate activities.
+This review covers all ten skills, shared contracts, templates, schemas, examples, defaults, adapters, and isolated bootstrap behavior. Static consistency, disposable filesystem checks, and real runtime use are reported separately.
 
 ## 1. Authority review
 
@@ -36,14 +36,14 @@ No full specialist pipeline is mandatory. Routine authorized work can proceed di
 
 | Scenario | Flow checked | Result |
 | --- | --- | --- |
-| New project | Mastermind creates and verifies `.project-meta/` and an empty `workspace/` as sibling git repositories → relevant domain drafts → consolidated owner review → approved artifacts → implementation in `workspace/` → Enforcer | Coherent. Bootstrap precedes business discussion; empty specialist folders and unnecessary ADRs or CHGs are avoided. |
-| Existing-project backfill | Mastermind snapshots the repository's Git state → restructures the current root in place with the complete repository under `workspace/` → verifies unchanged Git state → bootstraps sibling `.project-meta/` → Enforcer observation inventory → specialist reconstructions → owner review → approved baseline | Coherent for standalone repositories. The existing `.git`, history, remotes, branches, tracked files, and uncommitted files move together; linked worktrees require a dedicated conversion. |
+| New project | Mastermind creates root adapters, initially commits `.project-meta/`, and creates an empty sibling `workspace/` Git repository → agent runs from the root → relevant drafts → consolidated owner review → implementation → Enforcer | Coherent in isolated checks. Bootstrap precedes business discussion; generated adapters stay outside both repositories. |
+| Existing-project backfill | Complete preflight → staged metadata baseline → repository snapshot → intact move under `workspace/` → root adapters → final validation or rollback → observation inventory → owner-reviewed baseline | Coherent for standalone repositories in isolated checks. History, branch, remotes, local configuration, tracked changes, and untracked files survive; an injected post-move failure restored the original layout. Linked worktrees require dedicated conversion. |
 | Consequential feature | CHG → affected specialists follow the shared decision protocol (recommend, then ask only when blocked) → warranted ADR → exact review packet → canonical artifact promotion → implementation in `workspace/` → verification | Coherent after defining separate proposed replacement files, distinct CHG implementation state, and the shared decision protocol. |
 | Routine implementation fix | Read approved context → implement within authorized scope inside `workspace/` → targeted check → optional Enforcer finding | Coherent. No unnecessary CHG, ADR, or owner review is required. |
 | Conflicting approved artifacts | Name both sources → pause affected work → Mastermind presents focused choice → owner decides → owning specialists revise artifacts | Coherent. Neither code, recency, status, nor ADR automatically wins. |
 | Database migration | Business policy → technical boundary → data design → owner approval → implementation handoff → separate operational authorization → verification | Coherent. Approving the schema does not authorize executing against real data. |
 | UI proposal and review | Approved or labeled draft UX → design rules and a disposable preview in `.project-meta/prototype/`, isolated from `workspace/` → rendered UI review → targeted corrections or upstream proposal | Coherent. Prototype and review evidence never approve product, UX, or design intent, and the prototype's own lightweight stack never touches `workspace/`. |
-| Specialist decision under the shared protocol | Technical/Data/UX/Design specialist analyzes constraints → proposes one decisive recommendation with rationale → proceeds as labeled draft if reversible, or bundles into a review packet if consequential → asks only when a real blocker (missing owner-owned intent, source conflict, high-cost/hard-to-reverse choice, or pure preference fork) applies, batching any such questions once | Coherent. No specialist contract requires a question before a recommendation; each explicitly points to the shared protocol in SKILL-CONTRACT.md instead of restating its own wording. |
+| Specialist decision under the shared protocol | Technical/Data/UX/Design specialist analyzes constraints → proposes one decisive recommendation with rationale → proceeds as labeled draft if reversible, or bundles into a review packet if consequential → batches all currently known blockers → asks a later focused batch only if an answer or new evidence exposes a new blocker | Coherent. A default is supplied only when defensible; the protocol does not require invented confidence. |
 
 ## 4. Artifact lifecycle review
 
@@ -64,23 +64,25 @@ The following contracts align:
 - Global skills and defaults are read-only during managed-project work.
 - Project artifacts, decisions, and the disposable prototype stay under the managed project's private `.project-meta/`; evidence stays there too.
 - Implementation stays inside the managed project's `workspace/`, a separate repository carrying no Project Master trace.
-- `.project-meta/` and `workspace/` are found by directory structure — the nearest ancestor containing both as siblings — never by a symlink or an in-repo pointer file, so the convention holds identically across devices and operating systems.
+- Root `AGENTS.md` and `CLAUDE.md` provide runtime entry instructions outside both repositories; the sibling directory shape remains the runtime-independent project locator. Agents must run from the project root rather than `workspace/` alone.
+- Durable files store a stable library ID. Each device resolves the library through `PROJECT_MASTER_HOME`, the invoked skill location, or ignored `.project-meta/local.yaml`.
 - `project.yaml` configures directories, default approval categories, selected profile, and overrides; it does not replace domain artifacts.
 - `STATUS.md` is derived and links underlying sources.
 - Decision and change IDs use `ADR-###` and `CHG-###`.
 - A selected technology profile fills unresolved choices but does not override approved project architecture.
-- Mastermind performs new-project and existing-project bootstrap through a deterministic helper. For backfill, it restructures a standalone repository in place under `workspace/` and verifies that Git HEAD, remotes, and working-tree state are unchanged.
-- Every specialist decision follows the shared decision protocol in SKILL-CONTRACT.md: recommend by default, ask only when genuinely blocked, and batch any real blockers into one consolidated question rather than a running interrogation.
+- Mastermind performs transactional bootstrap through a deterministic helper. It validates before mutation, stages the metadata repository and baseline commit, verifies the result, and rolls handled failures back.
+- `.project-meta/` commits mark bootstrap, review, approval, and closure checkpoints. Project Master makes no implementation-repository commits.
+- Every specialist decision follows the shared decision protocol in SKILL-CONTRACT.md: recommend by default, ask only when genuinely blocked, avoid unsupported defaults, and batch currently known blockers.
 - All ten skills use the common fourteen-section contract.
 
-The reusable validator in `tools/validate-library.py` checks the skill set and headings, frontmatter basics, JSON syntax, template metadata, required bootstrap files, local Markdown links, adapter shell syntax, and exact CHG implementation-state agreement.
+`tools/validate-library.py` checks static contracts, schemas, templates, local links, and adapter syntax. `tools/validate-bootstrap.py` exercises bootstrap behavior in disposable repositories.
 
 Validation completed successfully on 2026-09-22:
 
 - `python3 project-master/tools/validate-library.py` passed every static check.
 - All skill and lifecycle-template frontmatter parsed with the available Ruby YAML parser.
 - The Python validator compiled with its cache redirected to a writable temporary path.
-- The bootstrap helper passed isolated new-project, existing-project preservation, collision, wrong-mode rejection, and side-effect-free dry-run checks.
+- The bootstrap helper passed isolated new-project, invalid preflight, pre-arranged repository, existing-repository preservation, injected post-restructure rollback, and side-effect-free dry-run checks.
 - `install-local.sh --dry-run` enumerated all ten skills for both configured target directories and made no writes.
 
 ## 6. Resolved findings
@@ -97,16 +99,22 @@ Validation completed successfully on 2026-09-22:
 | Initialization and common operating flows were spread across several files | Added [OPERATING-GUIDE.md](OPERATING-GUIDE.md) |
 | Project onboarding required manual copying and placeholder edits | Added Mastermind bootstrap modes and a collision-safe helper that configures new or existing projects before planning |
 | A single `.project/` beside code made it hard to share a project's implementation without also exposing AI-authored artifacts, and offered no real version history independent of the code repository | Split the managed project into two sibling repositories: private `.project-meta/` (context, decisions, changes, review evidence, and a disposable `prototype/`) and `workspace/` (real implementation, shareable with collaborators with no trace of Project Master). Every skill's artifact paths, the bootstrap helper, and all shared docs were updated to the new structure. |
-| Locating a project depended on an in-repo pointer file, which does not survive being gitignored, does not port across devices with different home directories, and put a Project Master trace inside the shared code repository | Replaced it with directory-structure discovery: the nearest ancestor containing both `.project-meta/` and `workspace/` as siblings. Pure relative-path convention, so it holds identically on any device or OS; no symlink or pointer file is created or required. A skill that cannot find this pattern fails clearly rather than guessing a root or silently bootstrapping one. |
+| Locating a project depended on an in-repo pointer file, which did not port cleanly and put a Project Master trace inside the shared code repository | Kept `workspace/` clean, used sibling directory structure as the runtime-independent locator, and added local `AGENTS.md` and `CLAUDE.md` at the outer project root for supported runtime activation. |
 | UI Prototyper wrote a rendered candidate directly into the project's real frontend folder, mixing throwaway exploration with production code and forcing it to match the real stack | Gave UI Prototyper its own `.project-meta/prototype/` folder with its own disposable, lightweight tooling, decoupled from `workspace/`'s stack and conventions. Dropped the pixel/icon-fidelity expectation: the candidate only needs to convey screens, states, and flow. |
-| Specialist contracts permitted a decisive recommendation but did not make it the default, so a session could interrogate the owner with a question per choice instead of proposing one | Added a shared decision protocol to SKILL-CONTRACT.md: analyze, recommend decisively with rationale, proceed as a labeled draft when reversible, bundle consequential choices into one packet, and ask only under a bounded set of real blockers — batched once, never a drip of follow-ups. Technical, Data, UX, and Design Architect point to it from their comparison step; Business Architect gets a narrower version reflecting that business intent is inherently owner-owned. |
+| Specialist contracts permitted a decisive recommendation but did not make it the default, so a session could interrogate the owner with a question per choice instead of proposing one | Added a shared decision protocol to SKILL-CONTRACT.md: analyze, recommend decisively with rationale, proceed as a labeled draft when reversible, bundle consequential choices, and batch currently known blockers. A later focused batch is permitted only for a newly revealed blocker; defaults are stated only when defensible. |
+| Failed backfill could leave `.project-meta/` or a partially restructured root | Moved all validation before mutation, prepared metadata in staging, validated the final shape, added rollback for handled failures, and exercised an injected failure after the repository move. |
+| Structural discovery alone did not reliably activate runtime instructions | Added root `AGENTS.md` and `CLAUDE.md` outside both repositories and made opening the project root an operating requirement. |
+| A durable absolute library path broke cross-device use | Replaced it with a stable library ID plus per-device environment, invoked-skill, and ignored local configuration resolution. |
+| Prototype dependencies, secrets, and build output could enter metadata history | Added metadata and prototype `.gitignore` templates while retaining useful source, configuration, and lockfiles. |
+| “Ask once” and “always recommend a default” were too absolute | Defined batches around currently known blockers, allowed newly discovered blockers, and required a default only when evidence supports one. |
+| Metadata Git history had no defined checkpoints | Bootstrap now makes the baseline commit; the operating policy adds review, approval, and verified/closed checkpoints while leaving `workspace/` commits to the implementation project. |
 
 ## Remaining validation boundary
 
-The static integration model is complete. These activities have not been performed:
+The written contracts and disposable bootstrap checks pass. These stronger validation layers have not been performed:
 
 - creating personal skill symlinks;
 - verifying skill discovery in Claude, Codex, or a VS Code agent;
-- running Project Master against a real new project and existing project.
+- running Project Master end to end against a real new project and a real existing project.
 
-Those are installation and pilot steps rather than unresolved document-contract issues.
+Claims in this review are limited to static consistency and isolated filesystem behavior until those runtime and real-project pilots are completed.
